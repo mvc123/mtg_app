@@ -4,12 +4,7 @@ angular.module('mtg_commander_app', ['ui.router','autocomplete'])
         alert("Hello");
         console.log('Hello');
       }
-      console.log("Hallo");
-      $scope.loadCards = function () {      
-        var allCards = $http({ method: 'GET', url:'http://localhost:8006/cardnames'}).then(function(response){
-          
-        });
-      }    
+      console.log("Hallo");        
   });
 
   var kickStart = function () {

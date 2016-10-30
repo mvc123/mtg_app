@@ -8,17 +8,17 @@ function handleHTTP (req, res){ // req = incoming message
         var sqlite3 = require('sqlite3').verbose();        
         var file = "mtg_app.db";        
         var db = new sqlite3.Database(file);        
-        var allnames = [];        
+        var allnames = "";        
 
         db.all("SELECT name FROM cards", function (err, rows) {            
             if(err){
                 console.log(err);
             }
             rows.forEach(function (row) {
-                allnames.push(row.name);
+                allnames = allnames+row.name+",";
             })            
-            res.writeHead(200, { 'Content-Type': 'application/json'});             
-            res.end(JSON.stringify(allnames));            
+            res.writeHead(200, { 'Content-Type': 'text/html'});             
+            res.end(allnames);            
             db.close();            
         })
         return;                                       

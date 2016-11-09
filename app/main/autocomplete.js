@@ -1,6 +1,6 @@
   'use strict';
   angular
-      .module('autocomplete',['ngMaterial' /*,'ngMessages', 'material.svgAssetsCache'*/])
+      .module('autocomplete',['ngMaterial'])
       .config(function ($stateProvider) {
         $stateProvider.state('autocomplete', {
           url: '/cardlookup',
@@ -14,19 +14,17 @@
     var self = this;
 
     self.simulateQuery = false;
-    self.isDisabled    = false;
-    
+    self.isDisabled    = false;    
     self.states        = loadAll();
     self.querySearch   = querySearch;
     // self.selectedItemChange = selectedItemChange;
-    // self.searchTextChange   = searchTextChange;
+    self.selectedItem = "";
 
-    // self.newState = newState;
-
-    /*function newState(state) {
-      alert("Sorry! You'll need to create a Constitution for " + state + " first!");
+    /*function selectedItemChange (item){
+      alert(item); 
     }*/
     
+
     function querySearch (query) {
       var results = query ? self.states.filter( createFilterFor(query) ) : self.states,
           deferred;
@@ -38,15 +36,7 @@
         return results;
       }
     }
-
-    /*function searchTextChange(text) {
-      $log.info('Text changed to ' + text);
-    }
-
-    function selectedItemChange(item) {
-      $log.info('Item changed to ' + JSON.stringify(item));
-    }*/
-    
+        
     function loadAll() {            
        $http({ method: 'GET', url:'http://localhost:8006/cardnames'}).then(function(response){                
         response.data = response.data.slice(0, -1);
@@ -60,7 +50,26 @@
         self.states = allCardsArray;                             
       })            
     }
-    
+        
+    $scope.$on("loadCard", function (){            
+      $http({method: 'GET', url:'http://localhost:8006/card', params: { 'cardname': self.selectedItem.display}})
+        .then(function(cards){                    
+          var cardarray = cards.data;
+          // remove all cards that don't have a multiverseId = no picture.                           
+          _.remove(cardarray, function(card){
+            return !card.multiverseId;
+          });
+          /*http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=368970&type=card
+
+          var para = document.createElement("p");
+          var node = document.createTextNode("This is new.");
+          para.appendChild(node);
+
+          var element = document.getElementById("div1");
+          element.appendChild(para);*/         
+        })
+    })
+
     function createFilterFor(query) {
       var lowercaseQuery = angular.lowercase(query);
 

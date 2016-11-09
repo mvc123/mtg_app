@@ -3,7 +3,7 @@ var file = "mtg_app.db";
 var exists = fs.existsSync(file);
 var _ = require('lodash');
 
-if(!exists) { // if file "test2.db doesn't exist create it"
+if(!exists) { // if file "mtg_app.db" doesn't exist create it"
   console.log("Creating DB file.");
   fs.openSync(file, "w");
 }

@@ -1,10 +1,8 @@
 angular.module('mtg_commander_app', ['ui.router','autocomplete'])  
   .controller('MainCtrl', function($scope, $http){
-      $scope.sayHello = function (){
-        alert("Hello");
-        console.log('Hello');
-      }
-      console.log("Hallo");        
+      $scope.loadCard = function (){
+        $scope.$broadcast('loadCard');
+      }    
   });
 
   var kickStart = function () {

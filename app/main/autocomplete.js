@@ -10,19 +10,36 @@
       })
       .controller('DemoCtrl', DemoCtrl);
 
-  function DemoCtrl ($timeout, $http, $q, $log, $scope) {
+  function DemoCtrl ($timeout, $http, $q, $log, $scope, $rootScope) {
     var self = this;
 
     self.simulateQuery = false;
     self.isDisabled    = false;    
     self.states        = loadAll();
     self.querySearch   = querySearch;
-    // self.selectedItemChange = selectedItemChange;
+    self.selectedItemChange = selectedItemChange;
     self.selectedItem = "";
 
-    /*function selectedItemChange (item){
-      alert(item); 
-    }*/
+    function selectedItemChange (item){      
+      if(item && item.display){
+        $http({method: 'GET', url:'http://localhost:8006/card', params: { 'cardname': item.display}})
+        .then(function(cards){                    
+          var cardarray = cards.data;                                                
+          _.remove(cardarray, function(card){
+            return !card.multiverseId;
+          });
+          console.log(cardarray);
+          $rootScope.cardVersions = cardarray;               
+          // $scope.cardVersions = cardarray; // dit werkt niet.          
+          var para = document.createElement("p");
+          var node = document.createTextNode(cardarray[0].name);
+          para.appendChild(node);
+
+          var element = document.getElementById("div1");
+          element.appendChild(para);         
+        })
+      }
+    }
     
 
     function querySearch (query) {
@@ -51,25 +68,6 @@
       })            
     }
         
-    $scope.$on("loadCard", function (){            
-      $http({method: 'GET', url:'http://localhost:8006/card', params: { 'cardname': self.selectedItem.display}})
-        .then(function(cards){                    
-          var cardarray = cards.data;
-          // remove all cards that don't have a multiverseId = no picture.                           
-          _.remove(cardarray, function(card){
-            return !card.multiverseId;
-          });
-          /*http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=368970&type=card
-
-          var para = document.createElement("p");
-          var node = document.createTextNode("This is new.");
-          para.appendChild(node);
-
-          var element = document.getElementById("div1");
-          element.appendChild(para);*/         
-        })
-    })
-
     function createFilterFor(query) {
       var lowercaseQuery = angular.lowercase(query);
 

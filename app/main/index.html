@@ -16,9 +16,16 @@
     <body>
       <div ng-controller="MainCtrl">
         <h1>Welkom op de MtG_app_commander.</h1>        
-        <div ng-include="'autocompletetemplate.html'"></div>
-        <button ng-click="loadCard()">ZOEK KAART</button>        
-      </div>      
+        <div ng-include="'autocompletetemplate.html'">          
+        </div>
+        <div id="div1">        
+        <span ng-repeat="cardversion in cardVersions" >
+          <img ng-src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{cardversion.multiverseId}}&type=card"
+              ng-click="selectCardVersion(cardversion)"/>
+        </span>
+
+      </div>                   
+      </div>         
     </body>
 
 </html>

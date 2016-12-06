@@ -2,7 +2,7 @@
   <md-content class="md-padding">
     <form ng-submit="$event.preventDefault()">
       <md-autocomplete md-min-length="3" md-delay="2" md-selected-item="ctrl.selectedItem" md-no-cache="true" md-search-text="ctrl.searchText"
-        md-items="item in ctrl.querySearch(ctrl.searchText)" md-item-text="item.display"
+        md-items="item in ctrl.querySearch(ctrl.searchText)" md-item-text="item.display" md-selected-item-change="ctrl.selectedItemChange(item)"
         placeholder="Enter cardname">
         <!-- md-selected-item-change="ctrl.selectedItemChange(item)" -->
         <md-item-template>

@@ -1,15 +1,20 @@
-// https://www.youtube.com/watch?v=nuw48-u3Yrg
-// 52:30 client is sending data explanation.
-// req.url = (http:://localhost.com/aaa) aaa
+// add file "server.js" in the root directory (highest level of the projectfolder: "./server.js") .
+// start server: CL: node server.js
+// view result: http://localhost:8006/app/main/index.html
+// function that handles http requests: 1. req (request, message) comes in 
+//                                      2. server goes to database or serves file  
+//                                      3. res (response) is send
 
-function handleHTTP (req, res){ // req = incoming message        
+function handleHTTP (req, res){     
+    // example: req = 'http:://localhost.com/aaa' 
+    //          req.url = 'aaa'        
     if(req.url === '/cardnames'){        
-        var sqlite3 = require('sqlite3').verbose();        
-        var file = "mtg_app_allSets.db";        
-        var db = new sqlite3.Database(file);        
+        var sqlite3 = require('sqlite3').verbose();  // sqlitestudio-3.1.0 : database manager       
+        var file = "mtg_app_allSets.db"; // name of the database => .db        
+        var db = new sqlite3.Database(file); // Returns a new Database object and automatically opens the database        
         var allnames = "";        
 
-        db.all("SELECT name FROM cards", function (err, rows) {            
+        db.all("SELECT name FROM cards", function (err, rows) { // rows = results                        
             if(err){
                 console.log(err);
             }
@@ -53,6 +58,13 @@ var port = 8006;
 var http_serv = http.createServer(handleHTTP).listen(port,host);
 var url = require("url");
 
+// static file server
 var node_static = require("node-static");
-var static_files = new node_static.Server(__dirname); 
-// __dirname = current directory where the current node program is running in.
+var static_files = new node_static.Server(__dirname, {cache: 0}); 
+ // __dirname = current directory where the current node program is running in.
+ var __dirname ="./app/main"  // niet zeker of dit juist is.   
+
+console.log("Server started !");
+console.log("Browse to http://localhost:8006/app/main/index.html")
+// https://www.youtube.com/watch?v=nuw48-u3Yrg
+// 52:30 client is sending data explanation.

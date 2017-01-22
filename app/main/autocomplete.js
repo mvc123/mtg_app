@@ -19,24 +19,20 @@
     self.querySearch   = querySearch;
     self.selectedItemChange = selectedItemChange;
     self.selectedItem = "";
-
+    
+    // when user clicks on item in autosuggest
     function selectedItemChange (item){      
       if(item && item.display){
         $http({method: 'GET', url:'http://localhost:8006/card', params: { 'cardname': item.display}})
         .then(function(cards){                    
-          var cardarray = cards.data;                                                
+          var cardarray = cards.data;
+          // remove all cards that don't have a multiverseId = corresponding picture'                                                
           _.remove(cardarray, function(card){
             return !card.multiverseId;
           });
-          console.log(cardarray);
-          $rootScope.cardVersions = cardarray;               
-          // $scope.cardVersions = cardarray; // dit werkt niet.          
-          var para = document.createElement("p");
-          var node = document.createTextNode(cardarray[0].name);
-          para.appendChild(node);
-
-          var element = document.getElementById("div1");
-          element.appendChild(para);         
+          // $rootScope.$emit only lets other $rootScope listeners catch it.
+          // http://stackoverflow.com/questions/26752030/rootscope-broadcast-vs-scope-emit                                    
+          $rootScope.$emit('cardVersions', cardarray); // cardVersions are put on the rootScope, smallSlider can see them.
         })
       }
     }
@@ -53,7 +49,8 @@
         return results;
       }
     }
-        
+
+    // load all cards    
     function loadAll() {            
        $http({ method: 'GET', url:'http://localhost:8006/cardnames'}).then(function(response){                
         response.data = response.data.slice(0, -1);
@@ -67,6 +64,8 @@
         self.states = allCardsArray;                             
       })            
     }
+
+    
         
     function createFilterFor(query) {
       var lowercaseQuery = angular.lowercase(query);

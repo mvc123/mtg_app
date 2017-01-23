@@ -30,9 +30,8 @@
           _.remove(cardarray, function(card){
             return !card.multiverseId;
           });
-          // $rootScope.$emit only lets other $rootScope listeners catch it.
-          // http://stackoverflow.com/questions/26752030/rootscope-broadcast-vs-scope-emit                                    
-          $rootScope.$emit('cardVersions', cardarray); // cardVersions are put on the rootScope, smallSlider can see them.
+          debugger;
+          $scope.cbCardVersionsLoaded(cardarray);          
         })
       }
     }
@@ -80,3 +79,14 @@
 Copyright 2016 Google Inc. All Rights Reserved. 
 Use of this source code is governed by an MIT-style license that can be foundin the LICENSE file at http://material.angularjs.org/HEAD/license.
 **/
+
+// problem: pass array of cardversions from autocomplete to smallSlider 
+// (2 directives next to each other / same level)
+// solution 1: put cardVersions on rootScope ($rootScope.cardVersions = ... ,
+// smallSlider receives collection from attributes.
+// solution 2: autocomplete uses $rootScope.$emit('newCardversions', array) / 
+// app.js uses $rootScope.$on('cardVersions', function(event, cardVersions){ $scope.cardVersions = cardVersions})
+// $rootScope.$emit only lets other $rootScope listeners catch it.
+// http://stackoverflow.com/questions/26752030/rootscope-broadcast-vs-scope-emit                                    
+// solution 3: app.js puts cbCardVersionsLoaded on it's scope. the function is called in autocomplete.js. 
+// cbCardVersionsLoaded puts the cardVersions on it's scope (the scope of ) and so smallSlider can see them !!!

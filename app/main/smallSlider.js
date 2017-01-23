@@ -5,13 +5,12 @@ angular.module('mtg_commander_app')
         collection: "=",
         itemwidth: "@", // set at app.js, this is a string
         itemheight: "@", // set at app.js, this is a string
-        clickslideritem:"&" // bind to external functions                
+        clickslideritem:"=" // bind to external functions                
       },      
       templateUrl: "smallSlider.html",
       link: function($scope, element, attr){        
         
-        $scope.init = function(collection){
-          debugger;
+        $scope.init = function(collection){          
           $scope.slidercounter = 0;
           document.getElementById("itemswrapper").style.marginLeft = "0px";         
           if(collection){
@@ -21,13 +20,7 @@ angular.module('mtg_commander_app')
           } 
         }
         $scope.init($scope.collection);   
-        
-        // geen idee waarom dit niet werkt.
-        // $scope.$watch(function(){ return $scope.collection}, $scope.init, true);
-        // $scope.$watch('collection', $scope.init, true);
-        // $scope.$watchCollection('collection', function(newCollection, oldCollection){ $scope.init(newCollection); });    
-        // $scope.$watchCollection('collection', $scope.init());
-
+      
         $scope.navtop = ($scope.itemheight / 2) - 15;
         $scope.rightnav = parseInt($scope.itemwidth) + 10;
         $scope.showNav = function(direction){
@@ -37,7 +30,6 @@ angular.module('mtg_commander_app')
           }              
           if (direction === "next") {
             return $scope.collection.length === 1 ? false : true; 
-            // return true;               
           }
         }
 
@@ -46,17 +38,17 @@ angular.module('mtg_commander_app')
           $scope.slidercounter--;
           document.getElementById("itemswrapper").style.marginLeft = (-$scope.slidercounter * $scope.itemwidth).toString() + "px"; 
         };
-        $scope.nextItem = function(){                             
+        $scope.nextItem = function(){
           $scope.slidercounter++;          
           if($scope.slidercounter === $scope.collection.length){
-            $scope.init();
+            $scope.init($scope.collection);
           }                    
           document.getElementById("itemswrapper").style.marginLeft = (-$scope.slidercounter * $scope.itemwidth).toString() + "px";    
         };
 
         $scope.draggableCheck = function (item) {          
           return item.draggable ? true : false;  
-        }                     
+        }                             
       }
     }
   })

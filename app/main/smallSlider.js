@@ -9,7 +9,6 @@ angular.module('mtg_commander_app')
       },      
       templateUrl: "smallSlider.html",
       link: function($scope, element, attr){        
-        
         $scope.init = function(collection){          
           $scope.slidercounter = 0;
           document.getElementById("itemswrapper").style.marginLeft = "0px";         
@@ -48,7 +47,12 @@ angular.module('mtg_commander_app')
 
         $scope.draggableCheck = function (item) {          
           return item.draggable ? true : false;  
-        }                             
+        }
+
+        $scope.drag = function (ev, item){
+          debugger;
+          ev.dataTransfer.setData("text", ev.target.id, item);
+        }
       }
     }
   })

@@ -29,8 +29,7 @@
           // remove all cards that don't have a multiverseId = corresponding picture'                                                
           _.remove(cardarray, function(card){
             return !card.multiverseId;
-          });
-          debugger;
+          });          
           $scope.cbCardVersionsLoaded(cardarray);          
         })
       }

@@ -32,11 +32,16 @@
         <div style="clear: left;"></div>     
         <div style="border: 1px solid black">
           <form ng-submit="createPile($event)">  
-            <input type="text" ng-model="pileLabel">
+            <input type="text" ng-model="nextPileLabel">
             <input type="submit">
           </form>
         </div>
-        <div id="table"></div>              
+        <div id="table">
+          <div ng-repeat="pile in piles" class="pile">
+            <p>{{pile.name}}</p>
+          </div>
+
+        </div>              
       </div>         
     </body>
 

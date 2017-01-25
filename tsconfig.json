@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es3",
+        "noImplicitAny": false,
+        "rootDir": ".",
+        "sourceMap": false
+    },
+    "filesGlob": [
+        "./app/**/*.ts",
+        "!./app/bower_components/**/*.ts",
+        "./typings/all.d.ts",
+        "!./node_modules/**/*.ts",
+        "!./**/*-test.ts"
+    ],
+    "exclude": [
+      "node_modules",
+      "typings"
+    ]
+}

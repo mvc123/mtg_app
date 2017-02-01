@@ -4,3 +4,9 @@
     width: 300px;
     margin-left: 10px;
 }
+
+/*  class add by dnd-draggable plugin on element when it is dragged
+    and removed when it is no longer dragged    */ 
+.dndDraggingSource { 
+    display: none;
+}

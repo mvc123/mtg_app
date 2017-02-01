@@ -1,0 +1,7 @@
+{
+  "name": "mtg_app",
+  "version": "0.0.0",
+  "dependencies": {    
+    "angular-drag-and-drop-lists": "2.1.0"
+  }
+}

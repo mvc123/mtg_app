@@ -1,16 +1,16 @@
 /// <reference path="../../typings/all.d.ts" />
-angular.module('mtg_commander_app', ['ui.router', 'autocomplete'])
+angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
     .controller('MainCtrl', function ($scope, $rootScope, $http) {
     // data used by / in smallSlider
     $scope.cardWidth = 223;
     $scope.cardHeight = 310;
     // when clicked on card in smallSlider
     $scope.selectCardVersion = function (card) {
-        _.remove($scope.cardVersions, function (cardVersion) {
-            return cardVersion.multiverseId !== card.multiverseId;
-        });
-        $scope.cardVersions[0].draggable = true;
+        $scope.selectedCards.push(card);
+        $scope.cardVersions = [];
     };
+    // selected cards from smallslider are pushed into selectedCards array
+    $scope.selectedCards = [];
     // called in autocomplete.js when cardVersions are loaded
     $scope.cbCardVersionsLoaded = function (cardVersions) {
         $scope.cardVersions = cardVersions;
@@ -20,25 +20,16 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete'])
     $scope.piles = [];
     $scope.createPile = function () {
         var newPile = {
-            name: $scope.nextPileLabel
+            name: $scope.nextPileLabel,
+            cards: [{ name: "Lightning Bolt" }, { name: "Giant Growth" }, { name: "Mystical Tutor" }]
         };
         $scope.piles.push(newPile);
     };
-    function onDrop(ev, data) {
-        debugger;
-        ev.preventDefault();
-        var data = ev.dataTransfer.getData("text");
-        ev.target.appendChild(document.getElementById(data));
-    }
-    // drag and drop: http://www.w3schools.com/html/html5_draganddrop.asp 
-    function drop(ev) {
-        ev.preventDefault();
-        var data = ev.dataTransfer.getData("text");
-        ev.target.appendChild(document.getElementById(data));
-    }
-    function allowDrop(ev) {
-        ev.preventDefault();
-    }
+    $scope.piles = [{ name: "creatures", cards: [{ name: "Llanowar Elves" }, { name: "Force of Nature" }, { name: "Jenara, Azusa of War" }] },
+        { name: "artifacts", cards: [{ name: "Mindstone" }, { name: "Sol Ring" }, { name: "Icy Manipulator" }] }];
+    // drag and drop https://github.com/marceljuenemann/angular-drag-and-drop-lists
+    // illegal drops: items is removed from original pile and not added to other pile
+    $scope.draggedcard = {};
 });
 // start the app
 var kickStart = function () {

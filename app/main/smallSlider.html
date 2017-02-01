@@ -12,9 +12,7 @@
     <img ng-repeat="item in collection" 
       ng-src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{item.multiverseId}}&type=card"
       ng-click="clickslideritem(item); init(collection);" 
-      style="float:left; height: {{itemheight}}px; width: {{itemwidth}}px;" 
-      draggable="{{ draggableCheck(item); }}"
-      ondragstart="drag(event, item)"
+      style="float:left; height: {{itemheight}}px; width: {{itemwidth}}px;"       
       />
   </div>
 

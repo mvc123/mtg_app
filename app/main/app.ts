@@ -4,15 +4,27 @@ interface Pile {
   name: string;
 }
 
-interface CardVersion {
-  multiverseId: number;
+interface Card { 
+  cmc: number;
+  colorIdentity: string; // example "R"
+  colors: string; // "Red"
+  imageName: string; // "fork"
+  manacost: string; //"{R}{R}"
+  multiverseId: number; // 200
+  name: string;  // "Fork"
+  power: number;
+  subtypes: string;
+  text: string; // "Copy target instant or sorcery spell, except that the copy is red. You may choose new targets for the copy."
+  toughness: number;
+  type: string; // "Instant"
+  types: string; //"Instant"
 }
 
 interface AppScope extends angular.IScope {
   pile: Pile[];
 }
 
-angular.module('mtg_commander_app', ['ui.router', 'autocomplete'])
+angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
   .controller('MainCtrl', function ($scope, $rootScope, $http) {
 
     // data used by / in smallSlider
@@ -20,12 +32,13 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete'])
     $scope.cardHeight = 310;    
     
       // when clicked on card in smallSlider
-    $scope.selectCardVersion = function (card) {      
-      _.remove($scope.cardVersions, function (cardVersion: CardVersion) {
-        return cardVersion.multiverseId !== card.multiverseId;
-      })
-      $scope.cardVersions[0].draggable = true;
+    $scope.selectCardVersion = function (card) {                 
+      $scope.selectedCards.push(card);
+      $scope.cardVersions = [];      
     }
+      // selected cards from smallslider are pushed into selectedCards array
+    $scope.selectedCards = [];
+
       // called in autocomplete.js when cardVersions are loaded
     $scope.cbCardVersionsLoaded = function (cardVersions){
       $scope.cardVersions = cardVersions
@@ -36,30 +49,19 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete'])
     $scope.piles = [];
     $scope.createPile = function () {
       let newPile = {
-        name: $scope.nextPileLabel
+        name: $scope.nextPileLabel,
+        cards: [{name: "Lightning Bolt"}, {name:"Giant Growth"}, {name:"Mystical Tutor"}]
       }
       $scope.piles.push(newPile);
     }
 
-    function onDrop(ev,data){
-      debugger;
-      ev.preventDefault();
-      var data = ev.dataTransfer.getData("text");
-      ev.target.appendChild(document.getElementById(data));
-    }    
+    $scope.piles = [{name: "creatures", cards: [{name: "Llanowar Elves"},{name: "Force of Nature"},{name: "Jenara, Azusa of War"}]},
+                    {name: "artifacts", cards: [{name: "Mindstone"}, {name:"Sol Ring"}, {name:"Icy Manipulator"}]}];
 
-    // drag and drop: http://www.w3schools.com/html/html5_draganddrop.asp 
-
-    function drop(ev) {
-      ev.preventDefault();
-      var data = ev.dataTransfer.getData("text");
-      ev.target.appendChild(document.getElementById(data));
-    }
-
-    function allowDrop(ev) {
-      ev.preventDefault();
-    }
-
+    // drag and drop https://github.com/marceljuenemann/angular-drag-and-drop-lists
+    // illegal drops: items is removed from original pile and not added to other pile
+    $scope.draggedcard = {};
+    
   })
 
 // start the app

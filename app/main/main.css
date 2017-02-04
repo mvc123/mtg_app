@@ -1,12 +1,50 @@
+.selectedCardsPile{    
+    list-style-type: none;     
+    padding: 10px 0px;          
+}
+
+.selectedCardsPile li{
+    float: left; 
+    display: block; 
+    padding: 5px 5px; 
+}
+
 .pile {
-    border: 5px solid black;
-    height: 400px;
-    width: 300px;
-    margin-left: 10px;
+    border: 1px solid black;    
+    min-width: 360px !important;
+    margin-left: 0px;
+    min-height: 312px !important;
 }
 
 /*  class add by dnd-draggable plugin on element when it is dragged
     and removed when it is no longer dragged    */ 
 .dndDraggingSource { 
-    display: none;
+    opacity: 0.5;    
+}
+
+/*.dndDragging {
+    opacity: 0.5;
+}*/
+
+/* dit is een li die gecreeërd wordt op de plaats waar het item gedropt gaat worden */
+.dndPlaceholder { 
+    background-color: #ddd !important;
+    display: block;
+    min-height: 42px;       
+}
+
+.pileOfCards{
+    display: block;  
+    list-style-type: none;
+    min-height: 258px;
+    min-width: 358x;
+    border: solid 1px purple;
+    padding: 0px 0px;
+    margin: 0px 0px;
+}
+
+.pileOfCards li{
+    float: left; 
+    display: block; 
+    padding: 5px 5px;     
 }

@@ -20,26 +20,32 @@
     <body>
       <div ng-controller="MainCtrl">
         <!--<h1 title name="{{ appname }}" collection="color"></h1>-->
-        <h3>MTG_app</h3>                
-        <div ng-include="'autocompletetemplate.html'" style="width: 30%; float:left;">          
-        </div>              
-        <div ng-if="cardVersions"
-             small-slider 
-             collection="cardVersions"              
-             itemheight="{{ cardHeight }}" 
-             itemwidth="{{ cardWidth }}"                          
-             clickslideritem="selectCardVersion"
-             style="float:left; position: relative;"></div>
-        <div>
-          <ul>
+        <h3>MTG_app</h3>
+        <div style="width:237px; height:340px; float:left; border: solid 1px black;">
+          <div ng-include="'autocompletetemplate.html'"></div>           
+          <div ng-if="!cardVersions" style="width: {{ cardWidth }}px; height: {{ cardHeight }}px; background-color: green; margin-left: 33px;"></div>            
+          <div ng-if="cardVersions"
+                small-slider 
+                collection="cardVersions"              
+                itemheight="{{ cardHeight }}" 
+                itemwidth="{{ cardWidth }}"                          
+                clickslideritem="selectCardVersion"
+                style="position: relative; margin-left: 33px;"></div>          
+        </div>
+        <div style="float:left; width:{{ (cardWidth + 10) * 4}}px; height:340px; border: solid 1px green; ">
+          <p style="height: 27px;">Geselecteerde kaarten</p>                                         
+          <ul class="selectedCardsPile"
+              style="width:{{ (cardWidth + 10) * 4}}px; height:260px; margin:0px; border: solid 1px red; "
+              dnd-horizontal-list="true">
             <li ng-repeat="card in selectedCards"
                 dnd-draggable="card"                                  
                 dnd-effect-allowed="move">
+                <img ng-src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{card.multiverseId}}&type=card" alt="" style="width: {{ cardWidth }}px; height: {{ cardHeight }}px">
               <!-- TODO add img  ng-src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{card.multiverseId}}&type=card" -->
-                {{ card.name }}
+                <!-- {{ card.name }} -->
             </li>            
-          </ul>        
-        </div>                          
+          </ul>
+        </div>                                         
         <div style="clear: left;"></div>
 
         <div style="border: 1px solid black">
@@ -51,14 +57,17 @@
         <div>
           <div ng-repeat="pile in piles" class="pile" style="float: left;">
             <p>{{pile.name}}</p> 
-            <ul dnd-list="pile.cards">
+            <ul dnd-list="pile.cards"
+                dnd-horizontal-list="true"
+                class="pileOfCards">
               <li ng-repeat="card in pile.cards"
                   dnd-draggable="card"
                   dnd-moved="pile.cards.splice($index,1)"                  
-                  dnd-effect-allowed="move"
+                  dnd-effect-allowed="all"
                   dnd-selected="draggedcard = card"
                   ng-class="{'selected': draggedcard ===  card}">
-                  {{card.name}}
+                  <img ng-src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{card.multiverseId}}&type=card" alt="" style="width: {{ cardWidth }}px; height: {{ cardHeight }}px">
+                  <!-- {{card.name}} -->
               </li>
             </ul>
           </div>                        

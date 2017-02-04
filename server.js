@@ -5,6 +5,9 @@
 //                                      2. server goes to database or serves file  
 //                                      3. res (response) is send
 
+
+// probleem: als Jester's Cap wordt opgevraagd: crash'
+
 function handleHTTP (req, res){     
     // example: req = 'http:://localhost.com/aaa' 
     //          req.url = 'aaa'        

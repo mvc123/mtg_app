@@ -28,8 +28,8 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
   .controller('MainCtrl', function ($scope, $rootScope, $http) {
 
     // data used by / in smallSlider
-    $scope.cardWidth = 223;
-    $scope.cardHeight = 310;    
+    $scope.cardWidth = 168;
+    $scope.cardHeight = 247;    
     
       // when clicked on card in smallSlider
     $scope.selectCardVersion = function (card) {                 
@@ -50,13 +50,14 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
     $scope.createPile = function () {
       let newPile = {
         name: $scope.nextPileLabel,
-        cards: [{name: "Lightning Bolt"}, {name:"Giant Growth"}, {name:"Mystical Tutor"}]
+        // cards: [{name: "Lightning Bolt"}, {name:"Giant Growth"}, {name:"Mystical Tutor"}]
+        cards: []
       }
       $scope.piles.push(newPile);
     }
 
-    $scope.piles = [{name: "creatures", cards: [{name: "Llanowar Elves"},{name: "Force of Nature"},{name: "Jenara, Azusa of War"}]},
-                    {name: "artifacts", cards: [{name: "Mindstone"}, {name:"Sol Ring"}, {name:"Icy Manipulator"}]}];
+    /*$scope.piles = [{name: "creatures", cards: [{name: "Llanowar Elves"},{name: "Force of Nature"},{name: "Jenara, Azusa of War"}]},
+                    {name: "artifacts", cards: [{name: "Mindstone"}, {name:"Sol Ring"}, {name:"Icy Manipulator"}]}];*/
 
     // drag and drop https://github.com/marceljuenemann/angular-drag-and-drop-lists
     // illegal drops: items is removed from original pile and not added to other pile

@@ -1,3 +1,7 @@
+// sqlitestudio-3.1.0 : database manager: C:\Program Files (x86)\sqlitestudio-3.1.0
+// https://www.sqlite.org/docs.html
+
+
 // add file "server.js" in the root directory (highest level of the projectfolder: "./server.js") .
 // start server: CL: node server.js
 // view result: http://localhost:8006/app/main/index.html
@@ -12,7 +16,7 @@ function handleHTTP (req, res){
     // example: req = 'http:://localhost.com/aaa' 
     //          req.url = 'aaa'        
     if(req.url === '/cardnames'){        
-        var sqlite3 = require('sqlite3').verbose();  // sqlitestudio-3.1.0 : database manager       
+        var sqlite3 = require('sqlite3').verbose();         
         var file = "mtg_app_allSets.db"; // name of the database => .db        
         var db = new sqlite3.Database(file); // Returns a new Database object and automatically opens the database        
         var allnames = "";        
@@ -30,6 +34,31 @@ function handleHTTP (req, res){
         })
         return;                                       
     }
+    if(req.url === '/deck'){
+        // var body = '';
+        var qs = require('querystring');                     
+        var sqlite3 = require('sqlite3').verbose();
+        var file = "mtg_app_allSets.db";   
+        var db = new sqlite3.Database(file);
+
+        /*req.on('data', function(data){
+            body += data;            
+        })  
+        req.on('end', function () {
+            var post = qs.parse(body);        
+            console.log(post);            
+            // db.all("INSERT INTO decks ('id', 'name', 'piles') VALUES (1,'deck1', post)")                                     
+        });*/
+        var body = [];
+        req.on('data', function(chunk) {
+        body.push(chunk);
+        }).on('end', function() {
+        body = Buffer.concat(body).toString();
+        console.log(body);
+        // at this point, `body` has the entire request body stored in it as a string
+});
+                  
+    }  
     if(req.url.match(/card/)){
         var queryObject = url.parse(req.url, true).query;                       
         var cardname = queryObject.cardname;

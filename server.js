@@ -34,28 +34,31 @@ function handleHTTP (req, res){
         })
         return;                                       
     }
-    if(req.url === '/deck'){
-        // var body = '';
-        var qs = require('querystring');                     
+    if(req.url === '/deck'){                                     
         var sqlite3 = require('sqlite3').verbose();
         var file = "mtg_app_allSets.db";   
         var db = new sqlite3.Database(file);
-
-        /*req.on('data', function(data){
-            body += data;            
-        })  
-        req.on('end', function () {
-            var post = qs.parse(body);        
-            console.log(post);            
-            // db.all("INSERT INTO decks ('id', 'name', 'piles') VALUES (1,'deck1', post)")                                     
-        });*/
+                           
         var body = [];
         req.on('data', function(chunk) {
         body.push(chunk);
         }).on('end', function() {
         body = Buffer.concat(body).toString();
-        console.log(body);
-        // at this point, `body` has the entire request body stored in it as a string
+        bodyobject = JSON.parse(body);
+        console.log(bodyobject.name);
+
+        db.all("INSERT INTO decks ('id', 'name', 'piles') VALUES (null,'"+bodyobject.name+"','"+JSON.stringify(bodyobject.piles)+"')", function (err, rows){
+            var message = "";
+            if(err){
+                message = "opslaan mislukt";
+            }
+            if(!err){
+                message = "opslaan gelukt";
+            }            
+            res.writeHead(200, { 'Content-Type': 'text/html'});             
+            res.end(message);            
+            db.close();    
+        });        
 });
                   
     }  

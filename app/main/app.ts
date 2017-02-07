@@ -34,6 +34,8 @@ interface AppScope extends angular.IScope {
   cardVersions: Card[];
   selectedCards: Card[]; // selected cards from smallslider are pushed into selectedCards array
   nextPileLabel: string;
+  alldecks: Deck[]; // all decks current user created
+  selectedDeck: { deck: Deck};
   selectCardVersion(card: Card): void; // when clicked on card in smallSlider
   createPile(): void;
   pileLength(pile: Pile): number;
@@ -42,6 +44,7 @@ interface AppScope extends angular.IScope {
   deleteSelectedCard(card: Card): void; // delete card from selectedCards
   deletePile(pile: Pile): void; // delete pile from deck
   saveDeck(): void;
+  deckSelected(): void;
 }
 
 angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
@@ -116,7 +119,29 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
         $http({ method: 'PUT', url: 'http://localhost:8006/deck'})
       }*/
     }
-    // drag and drop https://github.com/marceljuenemann/angular-drag-and-drop-lists        
+    function loadAllDecks (){
+      $http({ method: 'GET', url: 'http://localhost:8006/alldecks'}).then(function(alldecks){         
+        debugger;
+        let parsedDecks = _.map(alldecks.data, function(deck){
+          let parsedDeck = {
+            id: deck.id,
+            name: deck.name,
+            piles: JSON.parse(deck.piles)
+          }
+          return parsedDeck;
+        })
+       
+        $scope.alldecks = parsedDecks;        
+      });
+    }
+    loadAllDecks();
+    // drag and drop https://github.com/marceljuenemann/angular-drag-and-drop-lists
+    $scope.selectedDeck = {deck: null};
+    $scope.deckSelected = function (){
+      debugger;
+      $scope.deck = $scope.selectedDeck.deck
+      $scope.$digest();
+    }
   })
 
 // start the app

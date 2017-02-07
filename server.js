@@ -40,28 +40,47 @@ function handleHTTP (req, res){
         var db = new sqlite3.Database(file);
                            
         var body = [];
-        req.on('data', function(chunk) {
-        body.push(chunk);
-        }).on('end', function() {
-        body = Buffer.concat(body).toString();
-        bodyobject = JSON.parse(body);
-        console.log(bodyobject.name);
+        req.on('data', function (chunk) {
+            body.push(chunk);
+        }).on('end', function () {
+            body = Buffer.concat(body).toString();
+            bodyobject = JSON.parse(body);
+            console.log(bodyobject.name);
+            // vraagtekens toevoegen om sql injection tegen te gaan.
+            db.all("INSERT INTO decks ('id', 'name', 'piles') VALUES (null,'" + bodyobject.name + "','" + JSON.stringify(bodyobject.piles) + "')", function (err, rows) {
+                var message = "";
+                if (err) {
+                    message = "opslaan mislukt";
+                }
+                if (!err) {
+                    message = "opslaan gelukt";
+                }
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(message);
+                db.close();
+            });           
+        });
+        return; 
+    } 
+    if(req.url === '/alldecks'){
+        var sqlite3 = require('sqlite3').verbose();
+        var file = "mtg_app_allSets.db";   
+        var db = new sqlite3.Database(file);
+        var decks = [];
 
-        db.all("INSERT INTO decks ('id', 'name', 'piles') VALUES (null,'"+bodyobject.name+"','"+JSON.stringify(bodyobject.piles)+"')", function (err, rows){
-            var message = "";
+        db.all(" SELECT * FROM decks", function (err, rows){
             if(err){
-                message = "opslaan mislukt";
+                console.log(err)
             }
-            if(!err){
-                message = "opslaan gelukt";
-            }            
-            res.writeHead(200, { 'Content-Type': 'text/html'});             
-            res.end(message);            
-            db.close();    
-        });        
-});
-                  
-    }  
+            rows.forEach(function (row){
+                decks.push(row);
+            })
+            res.writeHead(200, { 'Content-Type': "application/json"});
+            res.end(JSON.stringify(decks));            
+            db.close(); 
+        })
+        return;
+    } 
     if(req.url.match(/card/)){
         var queryObject = url.parse(req.url, true).query;                       
         var cardname = queryObject.cardname;

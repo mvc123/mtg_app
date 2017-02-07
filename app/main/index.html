@@ -25,6 +25,8 @@
           <span>MTG_app</span>
           <input type="text" ng-model="deck.name" placeholder="Name of your deck">
           <span>{{ deck.name }}</span>
+          <select name="" id="" ng-options="deck.name for deck in alldecks" ng-model="selectedDeck.deck" ng-change="deckSelected()">            
+          </select>
         </div>
         <!-- kaarten zoeken en kaartversie kiezen uit slider -->
         <div style="width:237px; height:340px; float:left; border: solid 1px black;">

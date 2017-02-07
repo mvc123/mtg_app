@@ -62,7 +62,28 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
           $http({ method: 'PUT', url: 'http://localhost:8006/deck'})
         }*/
     };
-    // drag and drop https://github.com/marceljuenemann/angular-drag-and-drop-lists        
+    function loadAllDecks() {
+        $http({ method: 'GET', url: 'http://localhost:8006/alldecks' }).then(function (alldecks) {
+            debugger;
+            var parsedDecks = _.map(alldecks.data, function (deck) {
+                var parsedDeck = {
+                    id: deck.id,
+                    name: deck.name,
+                    piles: JSON.parse(deck.piles)
+                };
+                return parsedDeck;
+            });
+            $scope.alldecks = parsedDecks;
+        });
+    }
+    loadAllDecks();
+    // drag and drop https://github.com/marceljuenemann/angular-drag-and-drop-lists
+    $scope.selectedDeck = { deck: null };
+    $scope.deckSelected = function () {
+        debugger;
+        $scope.deck = $scope.selectedDeck.deck;
+        $scope.$digest();
+    };
 });
 // start the app
 var kickStart = function () {

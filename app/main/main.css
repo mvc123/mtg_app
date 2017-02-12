@@ -11,9 +11,9 @@
 
 .pile {
     border: 1px solid black;    
-    min-width: 360px !important;
+    /*min-width: 360px !important; */
     margin-left: 0px;
-    min-height: 312px !important;
+    /* min-height: 312px !important; */
 }
 
 /*  class add by dnd-draggable plugin on element when it is dragged
@@ -37,7 +37,7 @@
     display: block;  
     list-style-type: none;
     min-height: 258px;
-    min-width: 358x;
+    min-width: 358px;
     border: solid 1px purple;
     padding: 0px 0px;
     margin: 0px 0px;
@@ -47,4 +47,13 @@
     float: left; 
     display: block; 
     padding: 5px 5px;     
+}
+
+.listOfCards{
+    display: block;      
+    min-height: 129px;
+    min-width: 179px;
+    border: solid 1px purple;
+    padding: 0px 0px;
+    margin: 0px 0px;
 }

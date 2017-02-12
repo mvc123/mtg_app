@@ -83,7 +83,13 @@
         <div>
           <div ng-repeat="pile in deck.piles" class="pile" style="float: left;">
             <p>
-              {{pile.name}} 
+              {{pile.name}}
+              <span ng-click="changePileView(pile, 'list')">
+                <i class="fa fa-list" aria-hidden="true"></i>
+              </span>
+              <span ng-click="changePileView(pile, 'images')">
+                <i class="fa fa-picture-o" aria-hidden="true"></i>
+              </span>
               <span ng-click="deletePile(pile)">
                 <i class="fa fa-trash" aria-hidden="true"></i>
               </span>
@@ -91,7 +97,7 @@
             </p> 
             <ul dnd-list="pile.cards"
                 dnd-horizontal-list="true"
-                class="pileOfCards">
+                ng-class="getPileClass(pile)">
               <li ng-repeat="card in pile.cards"
                   dnd-draggable="card"
                   dnd-moved="pile.cards.splice($index,1)"                  
@@ -99,10 +105,16 @@
                   dnd-selected="draggedcard = card"
                   ng-class="{'selected': draggedcard ===  card}">
                   <i class="fa fa-trash" aria-hidden="true" ng-click="deleteCard(pile, card)"></i>
-                  <img ng-src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{card.multiverseId}}&type=card" alt="" style="width: {{ cardWidth }}px; height: {{ cardHeight }}px">
+                  <img ng-if="pile.view === 'images'" 
+                       ng-src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{card.multiverseId}}&type=card" 
+                       alt="" 
+                       style="width: {{ cardWidth }}px; height: {{ cardHeight }}px">
+                  <span ng-if="pile.view === 'list'">
+                    {{ card.name}}
+                  </span>
                   <!-- {{card.name}} -->
               </li>
-            </ul>
+            </ul>            
           </div>                        
         </div>
         </div>              

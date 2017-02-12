@@ -6,9 +6,12 @@ interface Deck {
   piles: Pile[];
 }
 
+// type View = 'list' | 'images'
+
 interface Pile {
   name: string;
-  cards: Card[];  
+  cards: Card[]; 
+  view: any; // View
 }
 
 interface Card { 
@@ -43,6 +46,8 @@ interface AppScope extends angular.IScope {
   deleteCard(pile: Pile, card: Card): void; // delete card from deck and pile
   deleteSelectedCard(card: Card): void; // delete card from selectedCards
   deletePile(pile: Pile): void; // delete pile from deck
+  changePileView(pile: Pile, view: string): void;
+  getPileClass(pile: Pile): string;
   saveDeck(): void;
   deckSelected(): void;
 }
@@ -79,7 +84,8 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
       let newPile = {
         name: $scope.nextPileLabel,
         // cards: [{name: "Lightning Bolt"}, {name:"Giant Growth"}, {name:"Mystical Tutor"}]
-        cards: []        
+        cards: [],
+        view: 'images'        
       }
       $scope.deck.piles.push(newPile);
     }
@@ -106,6 +112,24 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
       _.remove($scope.deck.piles, function(pile){
         return pile.name === targetpile.name;
       })
+    }
+
+    $scope.changePileView = function (pile: Pile, view: string){      
+      if(view === 'list'){
+        pile.view = 'list';
+      }
+      if(view === 'images'){
+        pile.view = 'images';
+      }
+    }
+
+    $scope.getPileClass = function (pile: Pile){
+      if(pile.view === "list"){
+        return "listOfCards";
+      }
+      if(pile.view === "images"){
+        return "pileOfCards";
+      }
     }
 
     $scope.saveDeck = function (){      

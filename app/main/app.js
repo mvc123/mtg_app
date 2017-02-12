@@ -25,7 +25,8 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
         var newPile = {
             name: $scope.nextPileLabel,
             // cards: [{name: "Lightning Bolt"}, {name:"Giant Growth"}, {name:"Mystical Tutor"}]
-            cards: []
+            cards: [],
+            view: 'images'
         };
         $scope.deck.piles.push(newPile);
     };
@@ -50,6 +51,22 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
         _.remove($scope.deck.piles, function (pile) {
             return pile.name === targetpile.name;
         });
+    };
+    $scope.changePileView = function (pile, view) {
+        if (view === 'list') {
+            pile.view = 'list';
+        }
+        if (view === 'images') {
+            pile.view = 'images';
+        }
+    };
+    $scope.getPileClass = function (pile) {
+        if (pile.view === "list") {
+            return "listOfCards";
+        }
+        if (pile.view === "images") {
+            return "pileOfCards";
+        }
     };
     $scope.saveDeck = function () {
         // let stringdeck = JSON.stringify($scope.deck);

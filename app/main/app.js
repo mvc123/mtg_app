@@ -53,18 +53,22 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
     };
     $scope.saveDeck = function () {
         // let stringdeck = JSON.stringify($scope.deck);
-        var stringdeck = $scope.deck;
+        var deck = $scope.deck;
         if (!$scope.deck.id) {
+            console.log("test");
             // $http({ method: 'GET', url:'http://localhost:8006/cardnames'})
-            $http({ method: 'POST', url: 'http://localhost:8006/deck', data: stringdeck }).then(function (result) { console.log(result); });
+            $http({ method: 'POST', url: 'http://localhost:8006/deck', data: deck }).then(function (result) {
+                console.log(result);
+            });
         }
-        /*if($scope.deck.id){
-          $http({ method: 'PUT', url: 'http://localhost:8006/deck'})
-        }*/
+        if ($scope.deck.id) {
+            $http({ method: 'PUT', url: 'http://localhost:8006/deck', data: deck }).then(function (result) {
+                console.log(result);
+            });
+        }
     };
     function loadAllDecks() {
         $http({ method: 'GET', url: 'http://localhost:8006/alldecks' }).then(function (alldecks) {
-            debugger;
             var parsedDecks = _.map(alldecks.data, function (deck) {
                 var parsedDeck = {
                     id: deck.id,
@@ -82,9 +86,18 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
     $scope.deckSelected = function () {
         debugger;
         $scope.deck = $scope.selectedDeck.deck;
-        $scope.$digest();
     };
+    window.onbeforeunload = function (e) {
+        return "Are you sure you want to navigate away from this page. Unsaved changes will be lost.";
+    };
+    /*$scope.$on('$locationChangeStart', function(event, next, current) {
+      if(!confirm("Are you sure you want to leave this page? Unsaved changes will be lost.")) {
+          event.preventDefault();
+      }
+    });*/
 });
+// TO DO: set most recent deck active via localstorage
+// TO DO: on close window, navigate away: popup: save changes ? (refresh works)
 // start the app
 var kickStart = function () {
     angular.bootstrap(document, ['mtg_commander_app']);

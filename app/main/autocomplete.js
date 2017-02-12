@@ -21,7 +21,7 @@
     self.selectedItem = "";
     
     // when user clicks on item in autosuggest
-    function selectedItemChange (item){      
+    function selectedItemChange (item){            
       if(item && item.display){
         $http({method: 'GET', url:'http://localhost:8006/card', params: { 'cardname': item.display}})
         .then(function(cards){                    
@@ -50,13 +50,11 @@
 
     // load all cards    
     function loadAll() {            
-       $http({ method: 'GET', url:'http://localhost:8006/cardnames'}).then(function(response){                
-        response.data = response.data.slice(0, -1);
-        var allCardsString = response.data;          
-        var allCardsArray = allCardsString.split(',').map( function (state) {
+       $http({ method: 'GET', url:'http://localhost:8006/cardnames'}).then(function(response){  
+        var allCardsArray = response.data.map( function (cardNameObject) {
             return {
-                value: state.toLowerCase(),
-                display: state
+                value: cardNameObject.name.toLowerCase(),
+                display: cardNameObject.name
             };
         });                
         self.states = allCardsArray;                             

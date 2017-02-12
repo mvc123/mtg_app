@@ -9,32 +9,33 @@
 //                                      2. server goes to database or serves file  
 //                                      3. res (response) is send
 
-
-// probleem: als Jester's Cap wordt opgevraagd: crash'
+var _ = require('lodash');
 
 function handleHTTP (req, res){     
     // example: req = 'http:://localhost.com/aaa' 
-    //          req.url = 'aaa'        
+    //          req.url = 'aaa'    
+    console.log(req.method);        
     if(req.url === '/cardnames'){        
         var sqlite3 = require('sqlite3').verbose();         
         var file = "mtg_app_allSets.db"; // name of the database => .db        
         var db = new sqlite3.Database(file); // Returns a new Database object and automatically opens the database        
-        var allnames = "";        
+        var allnames = [];        
 
-        db.all("SELECT name FROM cards", function (err, rows) { // rows = results                        
+        db.all("SELECT name FROM Cards", function (err, rows) { // rows = results                        
             if(err){
                 console.log(err);
             }
             rows.forEach(function (row) {
-                allnames = allnames+row.name+",";
+                allnames.push(row);
             })            
-            res.writeHead(200, { 'Content-Type': 'text/html'});             
-            res.end(allnames);            
+            res.writeHead(200, { 'Content-Type': 'application/json'});             
+            res.end(JSON.stringify(allnames));            
             db.close();            
         })
         return;                                       
     }
-    if(req.url === '/deck'){                                     
+    // save new deck
+    if(req.url === '/deck' && req.method === 'POST'){                                     
         var sqlite3 = require('sqlite3').verbose();
         var file = "mtg_app_allSets.db";   
         var db = new sqlite3.Database(file);
@@ -43,22 +44,38 @@ function handleHTTP (req, res){
         req.on('data', function (chunk) {
             body.push(chunk);
         }).on('end', function () {
-            body = Buffer.concat(body).toString();
-            bodyobject = JSON.parse(body);
-            console.log(bodyobject.name);
-            // vraagtekens toevoegen om sql injection tegen te gaan.
-            db.all("INSERT INTO decks ('id', 'name', 'piles') VALUES (null,'" + bodyobject.name + "','" + JSON.stringify(bodyobject.piles) + "')", function (err, rows) {
-                var message = "";
-                if (err) {
-                    message = "opslaan mislukt";
-                }
-                if (!err) {
-                    message = "opslaan gelukt";
-                }
-                res.writeHead(200, { 'Content-Type': 'text/html' });
-                res.end(message);
-                db.close();
-            });           
+            body = Buffer.concat(body).toString(); // geen toString geeft Buffer 7b 52 6e 6d
+            var parsedbody= JSON.parse(body);                        
+            var stmt = db.prepare('INSERT INTO Decks ("id", "name", "piles") VALUES (?,?,?)');
+            stmt.run(null, parsedbody.name, JSON.stringify(parsedbody.piles));   
+            stmt.finalize();                              
+            var message = "opslaan gelukt";            
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(message);
+            db.close();                       
+        });
+        return; 
+    } 
+    // update existing deck (name + piles, keep id)
+    if(req.url === '/deck' && req.method === 'PUT'){                                     
+        var sqlite3 = require('sqlite3').verbose();
+        var file = "mtg_app_allSets.db";   
+        var db = new sqlite3.Database(file);
+                           
+        var body = [];
+        req.on('data', function (chunk) {
+            body.push(chunk);
+        }).on('end', function () {
+            body = Buffer.concat(body).toString(); // geen toString geeft Buffer 7b 52 6e 6d
+            var parsedbody= JSON.parse(body);  
+            console.log("in deck put")                      
+            var stmt = db.prepare('UPDATE Decks SET "name" = ?, "piles" = ? WHERE id = ?');
+            stmt.run(parsedbody.name, JSON.stringify(parsedbody.piles), parsedbody.id);   
+            stmt.finalize();                              
+            var message = "update gelukt";            
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(message);
+            db.close();                       
         });
         return; 
     } 
@@ -68,9 +85,9 @@ function handleHTTP (req, res){
         var db = new sqlite3.Database(file);
         var decks = [];
 
-        db.all(" SELECT * FROM decks", function (err, rows){
+        db.all(" SELECT * FROM Decks", function (err, rows){
             if(err){
-                console.log(err)
+                console.log(err);
             }
             rows.forEach(function (row){
                 decks.push(row);
@@ -89,7 +106,7 @@ function handleHTTP (req, res){
         var db = new sqlite3.Database(file);
         var cards = [];
 
-        db.all(" SELECT * FROM cards WHERE name = '"+cardname+"'" , function (err, rows){
+        db.all(' SELECT * FROM Cards WHERE name = "'+cardname+'"' , function (err, rows){
             
             if(err){
                 console.log(err);

@@ -104,6 +104,26 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
         debugger;
         $scope.deck = $scope.selectedDeck.deck;
     };
+    $scope.amountOfDifferentCards = function (deck) {
+        debugger;
+        if (!deck) {
+            return;
+        }
+        ;
+        if (!deck.piles) {
+            return;
+        }
+        ;
+        var allCards = [];
+        _.forEach(deck.piles, function (pile) {
+            _.forEach(pile.cards, function (card) {
+                allCards.push(card);
+            });
+        });
+        debugger;
+        var filterAllCards = _.uniqBy(allCards, 'name'); // tsc gives wrong info
+        return filterAllCards.length;
+    };
     window.onbeforeunload = function (e) {
         return "Are you sure you want to navigate away from this page. Unsaved changes will be lost.";
     };

@@ -57,12 +57,13 @@
           </ul>          
         </div>
         <!-- samenvatting deck -->
-        <div style="float: left; width: 282px; height: 340px; border:solid black 1px;">
-          <p>
+        <div style="float: left; width: 282px; height: 340px; border:solid black 1px; overflow-y: scroll; position: relative;">
+          <p style="position: fixed; top: 9px; background-color: green;">
             {{ deck.name }} 
             <span ng-click="saveDeck()">
               <i class="fa fa-floppy-o" aria-hidden="true"></i>
             </span>
+            <span>{{amountOfDifferentCards(deck);}}</span>
           </p>
           <div ng-repeat="pile in deck.piles">
             <p>{{ pile.name }} <span style="float: right;">{{ pileLength(pile); }}</span></p>

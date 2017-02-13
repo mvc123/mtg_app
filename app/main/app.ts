@@ -50,6 +50,7 @@ interface AppScope extends angular.IScope {
   getPileClass(pile: Pile): string;
   saveDeck(): void;
   deckSelected(): void;
+  amountOfDifferentCards(deck: Deck): number; 
 }
 
 angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
@@ -168,6 +169,21 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
     $scope.deckSelected = function (){
       debugger;
       $scope.deck = $scope.selectedDeck.deck      
+    }
+
+    $scope.amountOfDifferentCards = function(deck: Deck): number{
+      debugger;
+      if(!deck){ return };
+      if(!deck.piles){ return };
+      let allCards = [];
+      _.forEach(deck.piles, function(pile){        
+        _.forEach(pile.cards, function(card){
+          allCards.push(card);
+        })
+      })
+      debugger;
+      let filterAllCards = _.uniqBy(allCards, 'name'); // tsc gives wrong info
+      return filterAllCards.length;
     }
 
     window.onbeforeunload = function (e) {

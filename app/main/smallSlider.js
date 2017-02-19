@@ -1,4 +1,4 @@
-angular.module('mtg_commander_app')
+angular.module('smallslider', [])
   .directive('smallSlider', function () {    
     return {
       scope: {

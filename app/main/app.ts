@@ -1,35 +1,5 @@
 /// <reference path="../../typings/all.d.ts" />
 
-interface Deck {
-  id: number;
-  name: string;
-  piles: Pile[];
-}
-
-// type View = 'list' | 'images'
-
-interface Pile {
-  name: string;
-  cards: Card[]; 
-  view: any; // View
-}
-
-interface Card { 
-  cmc: number;
-  colorIdentity: string; // example "R"
-  colors: string; // "Red"
-  imageName: string; // "fork"
-  manacost: string; //"{R}{R}"
-  multiverseId: number; // 200
-  name: string;  // "Fork"
-  power: number;
-  subtypes: string;
-  text: string; // "Copy target instant or sorcery spell, except that the copy is red. You may choose new targets for the copy."
-  toughness: number;
-  type: string; // "Instant"
-  types: string; //"Instant"
-}
-
 interface AppScope extends angular.IScope {
   deck: Deck,
   cardWidth: number;
@@ -53,8 +23,8 @@ interface AppScope extends angular.IScope {
   amountOfDifferentCards(deck: Deck): number; 
 }
 
-angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
-  .controller('MainCtrl', function ($scope: AppScope, $rootScope, $http) {
+angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions'])
+  .controller('MainCtrl', function ($scope: AppScope, $rootScope, $http, serverLocation, amountOfDifferentCards) {
 
     // data used by / in smallSlider
     $scope.cardWidth = 168;
@@ -139,18 +109,18 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
       if(!$scope.deck.id){        
         console.log("test");
         // $http({ method: 'GET', url:'http://localhost:8006/cardnames'})
-        $http({ method: 'POST', url: 'http://localhost:8006/deck', data: deck}).then(function(result){ 
+        $http({ method: 'POST', url: serverLocation + 'deck', data: deck}).then(function(result){ 
           console.log(result);
         });
       }
       if($scope.deck.id){
-        $http({ method: 'PUT', url: 'http://localhost:8006/deck', data: deck}).then(function(result){
+        $http({ method: 'PUT', url: serverLocation + 'deck', data: deck}).then(function(result){
           console.log(result);
         })
       }
     }
     function loadAllDecks (){
-      $http({ method: 'GET', url: 'http://localhost:8006/alldecks'}).then(function(alldecks){                         
+      $http({ method: 'GET', url: serverLocation + 'alldecks'}).then(function(alldecks){                         
         let parsedDecks = _.map(alldecks.data, function(deck){
           let parsedDeck = {
             id: deck.id,
@@ -171,21 +141,8 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
       $scope.deck = $scope.selectedDeck.deck      
     }
 
-    $scope.amountOfDifferentCards = function(deck: Deck): number{
-      debugger;
-      if(!deck){ return };
-      if(!deck.piles){ return };
-      let allCards = [];
-      _.forEach(deck.piles, function(pile){        
-        _.forEach(pile.cards, function(card){
-          allCards.push(card);
-        })
-      })
-      debugger;
-      let filterAllCards = _.uniqBy(allCards, 'name'); // tsc gives wrong info
-      return filterAllCards.length;
-    }
-
+    $scope.amountOfDifferentCards = amountOfDifferentCards;  
+      
     window.onbeforeunload = function (e) {
       return "Are you sure you want to navigate away from this page. Unsaved changes will be lost.";      
     };
@@ -200,16 +157,16 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
 
   // TO DO: set most recent deck active via localstorage
   // TO DO: on close window, navigate away: popup: save changes ? (refresh works)
-  
+  // TO DO: make function in service functions: amountOfDifferentCards in pile
 
 
 // start the app
-var kickStart = function () {
+/*var kickStart = function () {
   angular.bootstrap(document, ['mtg_commander_app']);
 };
 
 angular.element(document).ready(function () { //Browser
   kickStart();  
-});
+});*/
 
 

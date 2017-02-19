@@ -1,6 +1,6 @@
 /// <reference path="../../typings/all.d.ts" />
-angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
-    .controller('MainCtrl', function ($scope, $rootScope, $http) {
+angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions'])
+    .controller('MainCtrl', function ($scope, $rootScope, $http, serverLocation, amountOfDifferentCards) {
     // data used by / in smallSlider
     $scope.cardWidth = 168;
     $scope.cardHeight = 247;
@@ -74,18 +74,18 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
         if (!$scope.deck.id) {
             console.log("test");
             // $http({ method: 'GET', url:'http://localhost:8006/cardnames'})
-            $http({ method: 'POST', url: 'http://localhost:8006/deck', data: deck }).then(function (result) {
+            $http({ method: 'POST', url: serverLocation + 'deck', data: deck }).then(function (result) {
                 console.log(result);
             });
         }
         if ($scope.deck.id) {
-            $http({ method: 'PUT', url: 'http://localhost:8006/deck', data: deck }).then(function (result) {
+            $http({ method: 'PUT', url: serverLocation + 'deck', data: deck }).then(function (result) {
                 console.log(result);
             });
         }
     };
     function loadAllDecks() {
-        $http({ method: 'GET', url: 'http://localhost:8006/alldecks' }).then(function (alldecks) {
+        $http({ method: 'GET', url: serverLocation + 'alldecks' }).then(function (alldecks) {
             var parsedDecks = _.map(alldecks.data, function (deck) {
                 var parsedDeck = {
                     id: deck.id,
@@ -104,26 +104,7 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
         debugger;
         $scope.deck = $scope.selectedDeck.deck;
     };
-    $scope.amountOfDifferentCards = function (deck) {
-        debugger;
-        if (!deck) {
-            return;
-        }
-        ;
-        if (!deck.piles) {
-            return;
-        }
-        ;
-        var allCards = [];
-        _.forEach(deck.piles, function (pile) {
-            _.forEach(pile.cards, function (card) {
-                allCards.push(card);
-            });
-        });
-        debugger;
-        var filterAllCards = _.uniqBy(allCards, 'name'); // tsc gives wrong info
-        return filterAllCards.length;
-    };
+    $scope.amountOfDifferentCards = amountOfDifferentCards;
     window.onbeforeunload = function (e) {
         return "Are you sure you want to navigate away from this page. Unsaved changes will be lost.";
     };
@@ -135,10 +116,12 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists'])
 });
 // TO DO: set most recent deck active via localstorage
 // TO DO: on close window, navigate away: popup: save changes ? (refresh works)
+// TO DO: make function in service functions: amountOfDifferentCards in pile
 // start the app
-var kickStart = function () {
-    angular.bootstrap(document, ['mtg_commander_app']);
+/*var kickStart = function () {
+  angular.bootstrap(document, ['mtg_commander_app']);
 };
-angular.element(document).ready(function () {
-    kickStart();
-});
+
+angular.element(document).ready(function () { //Browser
+  kickStart();
+});*/

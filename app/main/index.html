@@ -77,14 +77,24 @@
         <div style="clear: left;"></div>
         <!-- piles maken -->
         <div style="border: 1px solid black">
-          <form ng-submit="createPile($event)">  
+          <form ng-submit="createPile($event);">  
             <input type="text" placeholder="Name of pile" ng-model="nextPileLabel">
             <input type="submit" value="Make pile">
           </form>
+          
+        </div>
+        <div>
+          <span ng-repeat="pile in deck.piles" style="padding: 5px 10px;">
+            <span ng-click="togglePile(pile)" style="background-color: yellow; margin-right: 10px">
+              {{ pile.name}} 
+              <i class="fa fa-eye" aria-hidden="true" ng-if="showPile(pile)"></i>
+              <i class="fa fa-eye-slash" aria-hidden="true" ng-if="!showPile(pile)"></i>
+            </span>
+          </span>
         </div>
         <!-- table met piles -->
         <div>
-          <div ng-repeat="pile in deck.piles" class="pile" style="float: left;">
+          <div ng-repeat="pile in deck.piles" class="pile" style="float: left;" ng-if="showPile(pile)">
             <p>
               {{pile.name}}
               <span ng-click="changePileView(pile, 'list')">

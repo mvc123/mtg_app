@@ -33,8 +33,35 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
     $scope.pileLength = function (pile) {
         return pile.cards.length;
     };
-    $scope.deleteCard = function (targetpile, targetcard) {
+
+    $scope.showPile = function(pile){
         debugger;
+        if($scope.hiddenPiles.length === 0){
+            return true;
+        }
+        var pileFound = _.find($scope.hiddenPiles, function(hiddenPile){
+            return hiddenPile.name === pile.name;
+        }) 
+        if(pileFound){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    $scope.togglePile = function(pile){
+        debugger;
+        var pileFound = _.find($scope.hiddenPiles, function(hiddenPile){
+            return hiddenPile.name === pile.name;
+        })              
+        if(pileFound){
+            _.pull($scope.hiddenPiles, pile);
+        } else {
+            $scope.hiddenPiles.push(pile);
+        }
+    };
+    $scope.hiddenPiles = [];
+    $scope.deleteCard = function (targetpile, targetcard) {        
         var indexpile = _.findIndex($scope.deck.piles, function (pile) {
             return pile.name === targetpile.name;
         });
@@ -100,8 +127,7 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
     loadAllDecks();
     // drag and drop https://github.com/marceljuenemann/angular-drag-and-drop-lists
     $scope.selectedDeck = { deck: null };
-    $scope.deckSelected = function () {
-        debugger;
+    $scope.deckSelected = function () {        
         $scope.deck = $scope.selectedDeck.deck;
     };
     $scope.amountOfDifferentCards = amountOfDifferentCards;

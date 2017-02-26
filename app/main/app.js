@@ -33,41 +33,39 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
     $scope.pileLength = function (pile) {
         return pile.cards.length;
     };
-
-    $scope.showPile = function(pile){
-        debugger;
-        if($scope.hiddenPiles.length === 0){
-            return true;
-        }
-        var pileFound = _.find($scope.hiddenPiles, function(hiddenPile){
-            return hiddenPile.name === pile.name;
-        }) 
-        if(pileFound){
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    $scope.togglePile = function(pile){
-        debugger;
-        var pileFound = _.find($scope.hiddenPiles, function(hiddenPile){
-            return hiddenPile.name === pile.name;
-        })              
-        if(pileFound){
-            _.pull($scope.hiddenPiles, pile);
-        } else {
-            $scope.hiddenPiles.push(pile);
-        }
-    };
-    $scope.hiddenPiles = [];
-    $scope.deleteCard = function (targetpile, targetcard) {        
+    $scope.deleteCard = function (targetpile, targetcard) {
         var indexpile = _.findIndex($scope.deck.piles, function (pile) {
             return pile.name === targetpile.name;
         });
         _.remove($scope.deck.piles[indexpile].cards, function (card) {
             return card.name === targetcard.name;
         });
+    };
+    $scope.hiddenPiles = [];
+    $scope.togglePile = function (pile) {
+        var hiddenPile = _.find($scope.hiddenPiles, function (p) {
+            return p.name === pile.name;
+        });
+        if (hiddenPile) {
+            _.pull($scope.hiddenPiles, hiddenPile);
+        }
+        if (!hiddenPile) {
+            $scope.hiddenPiles.push(pile);
+        }
+    };
+    $scope.showPile = function (pile) {
+        if ($scope.hiddenPiles.length === 0) {
+            return true;
+        }
+        var hiddenPile = _.find($scope.hiddenPiles, function (p) {
+            return p.name === pile.name;
+        });
+        if (hiddenPile) {
+            return false;
+        }
+        if (!hiddenPile) {
+            return true;
+        }
     };
     $scope.deleteSelectedCard = function (targetcard) {
         _.remove($scope.selectedCards, function (card) {
@@ -122,26 +120,33 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
                 return parsedDeck;
             });
             $scope.alldecks = parsedDecks;
+            var latestActiveDeckName = localStorage.getItem("latestActiveDeck");
+            debugger;
+            if (latestActiveDeckName) {
+                var latestActiveDeck = _.find($scope.alldecks, function (deck) {
+                    return deck.name === latestActiveDeckName;
+                });
+                if (latestActiveDeck) {
+                    $scope.deck = latestActiveDeck;
+                }
+            }
         });
     }
     loadAllDecks();
     // drag and drop https://github.com/marceljuenemann/angular-drag-and-drop-lists
     $scope.selectedDeck = { deck: null };
-    $scope.deckSelected = function () {        
+    $scope.deckSelected = function () {
+        debugger;
         $scope.deck = $scope.selectedDeck.deck;
     };
     $scope.amountOfDifferentCards = amountOfDifferentCards;
     window.onbeforeunload = function (e) {
+        if ($scope.deck && $scope.deck.name) {
+            localStorage.setItem('latestActiveDeck', $scope.deck.name);
+        }
         return "Are you sure you want to navigate away from this page. Unsaved changes will be lost.";
     };
-    /*$scope.$on('$locationChangeStart', function(event, next, current) {
-      if(!confirm("Are you sure you want to leave this page? Unsaved changes will be lost.")) {
-          event.preventDefault();
-      }
-    });*/
 });
-// TO DO: set most recent deck active via localstorage
-// TO DO: on close window, navigate away: popup: save changes ? (refresh works)
 // TO DO: make function in service functions: amountOfDifferentCards in pile
 // start the app
 /*var kickStart = function () {

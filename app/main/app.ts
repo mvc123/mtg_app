@@ -9,6 +9,9 @@ interface AppScope extends angular.IScope {
   nextPileLabel: string;
   alldecks: Deck[]; // all decks current user created
   selectedDeck: { deck: Deck};
+  hiddenPiles: Pile[];
+  togglePile(pile): void; 
+  showPile(pile): boolean;
   selectCardVersion(card: Card): void; // when clicked on card in smallSlider
   createPile(): void;
   pileLength(pile: Pile): number;
@@ -25,7 +28,7 @@ interface AppScope extends angular.IScope {
 
 angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions'])
   .controller('MainCtrl', function ($scope: AppScope, $rootScope, $http, serverLocation, amountOfDifferentCards) {
-
+    
     // data used by / in smallSlider
     $scope.cardWidth = 168;
     $scope.cardHeight = 247;    
@@ -64,13 +67,40 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
       return pile.cards.length;
     }
     $scope.deleteCard = function (targetpile, targetcard){
-      debugger;
       let indexpile = _.findIndex($scope.deck.piles, function(pile){
         return pile.name === targetpile.name;
       })
       _.remove($scope.deck.piles[indexpile].cards, function (card){
         return card.name === targetcard.name;
       })
+    }
+
+    $scope.hiddenPiles = [];
+    $scope.togglePile = function(pile: Pile){
+      let hiddenPile = _.find($scope.hiddenPiles, function(p){
+        return p.name === pile.name;
+      })
+      if(hiddenPile){
+        _.pull($scope.hiddenPiles, hiddenPile);
+      }
+      if(!hiddenPile){
+        $scope.hiddenPiles.push(pile);
+      }
+
+    } 
+    $scope.showPile = function (pile: Pile){
+      if($scope.hiddenPiles.length === 0){
+        return true;
+      }
+      let hiddenPile = _.find($scope.hiddenPiles, function(p){
+        return p.name === pile.name;
+      })
+      if(hiddenPile){
+        return false;
+      }
+      if(!hiddenPile){
+        return true;
+      }
     }
 
     $scope.deleteSelectedCard = function (targetcard: Card){
@@ -130,7 +160,17 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
           return parsedDeck;
         })
        
-        $scope.alldecks = parsedDecks;        
+        $scope.alldecks = parsedDecks;
+        let latestActiveDeckName = localStorage.getItem("latestActiveDeck");
+        debugger;
+        if(latestActiveDeckName){
+          let latestActiveDeck = _.find($scope.alldecks, function(deck){
+            return deck.name === latestActiveDeckName;
+          })
+          if(latestActiveDeck){
+            $scope.deck= latestActiveDeck;
+          }
+        }        
       });
     }
     loadAllDecks();
@@ -144,19 +184,13 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
     $scope.amountOfDifferentCards = amountOfDifferentCards;  
       
     window.onbeforeunload = function (e) {
+      if($scope.deck && $scope.deck.name){
+        localStorage.setItem('latestActiveDeck', $scope.deck.name);
+      }
       return "Are you sure you want to navigate away from this page. Unsaved changes will be lost.";      
     };
-
-    /*$scope.$on('$locationChangeStart', function(event, next, current) {
-      if(!confirm("Are you sure you want to leave this page? Unsaved changes will be lost.")) {
-          event.preventDefault();
-      }
-    });*/
-
   })
 
-  // TO DO: set most recent deck active via localstorage
-  // TO DO: on close window, navigate away: popup: save changes ? (refresh works)
   // TO DO: make function in service functions: amountOfDifferentCards in pile
 
 

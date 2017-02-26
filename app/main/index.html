@@ -27,6 +27,7 @@
           <span>MTG_app</span>
           <input type="text" ng-model="deck.name" placeholder="Name of your deck">
           <span>{{ deck.name }}</span>
+          <!-- opgeslagen deck selecteren -->
           <select name="" id="" ng-options="deck.name for deck in alldecks" ng-model="selectedDeck.deck" ng-change="deckSelected()">            
           </select>
         </div>
@@ -83,6 +84,7 @@
           </form>
           
         </div>
+        <!-- labels om view te togglen -->
         <div>
           <span ng-repeat="pile in deck.piles" style="padding: 5px 10px;">
             <span ng-click="togglePile(pile)" style="background-color: yellow; margin-right: 10px">

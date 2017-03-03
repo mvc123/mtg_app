@@ -26,7 +26,7 @@ interface AppScope extends angular.IScope {
   amountOfDifferentCards(deck: Deck): number; 
 }
 
-angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions'])
+angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions', 'services'])
   .controller('MainCtrl', function ($scope: AppScope, $rootScope, $http, serverLocation, amountOfDifferentCards) {
     
     // data used by / in smallSlider
@@ -151,7 +151,7 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
     }
     function loadAllDecks (){
       $http({ method: 'GET', url: serverLocation + 'alldecks'}).then(function(alldecks){                         
-        let parsedDecks = _.map(alldecks.data, function(deck){
+        let parsedDecks = _.map(alldecks.data, function(deck: Deck){
           let parsedDeck = {
             id: deck.id,
             name: deck.name,
@@ -161,8 +161,7 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
         })
        
         $scope.alldecks = parsedDecks;
-        let latestActiveDeckName = localStorage.getItem("latestActiveDeck");
-        debugger;
+        let latestActiveDeckName = localStorage.getItem("latestActiveDeck");        
         if(latestActiveDeckName){
           let latestActiveDeck = _.find($scope.alldecks, function(deck){
             return deck.name === latestActiveDeckName;

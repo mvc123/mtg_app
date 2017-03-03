@@ -1,5 +1,5 @@
 /// <reference path="../../typings/all.d.ts" />
-angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions'])
+angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions', 'services'])
     .controller('MainCtrl', function ($scope, $rootScope, $http, serverLocation, amountOfDifferentCards) {
     // data used by / in smallSlider
     $scope.cardWidth = 168;
@@ -121,7 +121,6 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
             });
             $scope.alldecks = parsedDecks;
             var latestActiveDeckName = localStorage.getItem("latestActiveDeck");
-            debugger;
             if (latestActiveDeckName) {
                 var latestActiveDeck = _.find($scope.alldecks, function (deck) {
                     return deck.name === latestActiveDeckName;

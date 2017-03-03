@@ -17,7 +17,8 @@
         <script src="app.js"></script>
         <script src="smallslider.js"></script>          
         <script src="constants.js"></script>
-        <script src="functions.js"></script>   
+        <script src="functions.js"></script>
+        <script src="services.js"></script>   
         <script src="https://use.fontawesome.com/54cb8d98a3.js"></script>    
     </head>
     <body>
@@ -98,7 +99,8 @@
         <div>
           <div ng-repeat="pile in deck.piles" class="pile" style="float: left;" ng-if="showPile(pile)">
             <p>
-              {{pile.name}}
+              {{pile.name}} 
+              <div color-counter pile="pile"></div>
               <span ng-click="changePileView(pile, 'list')">
                 <i class="fa fa-list" aria-hidden="true"></i>
               </span>

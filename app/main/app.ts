@@ -10,6 +10,7 @@ interface AppScope extends angular.IScope {
   alldecks: Deck[]; // all decks current user created
   selectedDeck: { deck: Deck};
   hiddenPiles: Pile[];
+  showSavePopup: boolean;
   togglePile(pile): void; 
   showPile(pile): boolean;
   selectCardVersion(card: Card): void; // when clicked on card in smallSlider
@@ -18,7 +19,9 @@ interface AppScope extends angular.IScope {
   cbCardVersionsLoaded(cardVersions: Card[]): void;
   deleteCard(pile: Pile, card: Card): void; // delete card from deck and pile
   deleteSelectedCard(card: Card): void; // delete card from selectedCards
-  deletePile(pile: Pile): void; // delete pile from deck
+  deletePile(pile: Pile, event): void; // delete pile from deck
+  hideAllPiles(): void;
+  showAllPiles(): void;
   changePileView(pile: Pile, view: string): void;
   getPileClass(pile: Pile): string;
   saveDeck(): void;
@@ -27,7 +30,8 @@ interface AppScope extends angular.IScope {
 }
 
 angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions', 'services'])
-  .controller('MainCtrl', function ($scope: AppScope, $rootScope, $http, serverLocation, amountOfDifferentCards) {
+  .controller('MainCtrl', function ($scope: AppScope, $rootScope, $http, serverLocation, amountOfDifferentCards, 
+                                    $timeout, confirmationpopup) {
     
     // data used by / in smallSlider
     $scope.cardWidth = 168;
@@ -63,6 +67,16 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
       }
       $scope.deck.piles.push(newPile);
     }
+    $scope.hideAllPiles = function (){
+      $scope.hiddenPiles = [];
+      _.forEach($scope.deck.piles, function (pile){
+        $scope.hiddenPiles.push(pile);
+      });
+    };
+    $scope.showAllPiles = function (){
+      $scope.hiddenPiles = [];
+    };
+
     $scope.pileLength = function (pile: Pile){
       return pile.cards.length;
     }
@@ -75,7 +89,7 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
       })
     }
 
-    $scope.hiddenPiles = [];
+    $scope.hiddenPiles = localStorage.getItem("hiddenPiles") ? JSON.parse(localStorage.getItem("hiddenPiles")) : [];
     $scope.togglePile = function(pile: Pile){
       let hiddenPile = _.find($scope.hiddenPiles, function(p){
         return p.name === pile.name;
@@ -109,10 +123,12 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
       })
     }
 
-    $scope.deletePile = function (targetpile: Pile){
-      _.remove($scope.deck.piles, function(pile){
+    $scope.deletePile = function (targetpile: Pile, $event){
+      debugger;
+      confirmationpopup.show($event);
+      /*_.remove($scope.deck.piles, function(pile){
         return pile.name === targetpile.name;
-      })
+      })*/
     }
 
     $scope.changePileView = function (pile: Pile, view: string){      
@@ -133,20 +149,33 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
       }
     }
 
+    $scope.showSavePopup = false;
+
     $scope.saveDeck = function (){      
       // let stringdeck = JSON.stringify($scope.deck);
       let deck = $scope.deck;      
       if(!$scope.deck.id){        
         console.log("test");
         // $http({ method: 'GET', url:'http://localhost:8006/cardnames'})
-        $http({ method: 'POST', url: serverLocation + 'deck', data: deck}).then(function(result){ 
-          console.log(result);
+        $http({ method: 'POST', url: serverLocation + 'deck', data: deck}).then(function(result){           
+          $scope.showSavePopup = true;
+          $timeout(function(){
+            $scope.showSavePopup = false;
+          }, 2000)
+        }, function(){
+          alert("Saven mislukt.");
         });
       }
       if($scope.deck.id){
         $http({ method: 'PUT', url: serverLocation + 'deck', data: deck}).then(function(result){
-          console.log(result);
-        })
+          debugger;
+          $scope.showSavePopup = true;
+          $timeout(function(){
+            $scope.showSavePopup = false;
+          }, 2000)
+        }, function(){
+          alert("Saven mislukt.");
+        });
       }
     }
     function loadAllDecks (){
@@ -185,6 +214,7 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
     window.onbeforeunload = function (e) {
       if($scope.deck && $scope.deck.name){
         localStorage.setItem('latestActiveDeck', $scope.deck.name);
+        localStorage.setItem('hiddenPiles', JSON.stringify($scope.hiddenPiles));
       }
       return "Are you sure you want to navigate away from this page. Unsaved changes will be lost.";      
     };

@@ -1,6 +1,6 @@
 /// <reference path="../../typings/all.d.ts" />
 angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions', 'services'])
-    .controller('MainCtrl', function ($scope, $rootScope, $http, serverLocation, amountOfDifferentCards) {
+    .controller('MainCtrl', function ($scope, $rootScope, $http, serverLocation, amountOfDifferentCards, $timeout, confirmationpopup) {
     // data used by / in smallSlider
     $scope.cardWidth = 168;
     $scope.cardHeight = 247;
@@ -30,6 +30,15 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
         };
         $scope.deck.piles.push(newPile);
     };
+    $scope.hideAllPiles = function () {
+        $scope.hiddenPiles = [];
+        _.forEach($scope.deck.piles, function (pile) {
+            $scope.hiddenPiles.push(pile);
+        });
+    };
+    $scope.showAllPiles = function () {
+        $scope.hiddenPiles = [];
+    };
     $scope.pileLength = function (pile) {
         return pile.cards.length;
     };
@@ -41,7 +50,7 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
             return card.name === targetcard.name;
         });
     };
-    $scope.hiddenPiles = [];
+    $scope.hiddenPiles = localStorage.getItem("hiddenPiles") ? JSON.parse(localStorage.getItem("hiddenPiles")) : [];
     $scope.togglePile = function (pile) {
         var hiddenPile = _.find($scope.hiddenPiles, function (p) {
             return p.name === pile.name;
@@ -72,10 +81,12 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
             return card.name === targetcard.name;
         });
     };
-    $scope.deletePile = function (targetpile) {
-        _.remove($scope.deck.piles, function (pile) {
-            return pile.name === targetpile.name;
-        });
+    $scope.deletePile = function (targetpile, $event) {
+        debugger;
+        confirmationpopup.show($event);
+        /*_.remove($scope.deck.piles, function(pile){
+          return pile.name === targetpile.name;
+        })*/
     };
     $scope.changePileView = function (pile, view) {
         if (view === 'list') {
@@ -93,6 +104,7 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
             return "pileOfCards";
         }
     };
+    $scope.showSavePopup = false;
     $scope.saveDeck = function () {
         // let stringdeck = JSON.stringify($scope.deck);
         var deck = $scope.deck;
@@ -100,12 +112,23 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
             console.log("test");
             // $http({ method: 'GET', url:'http://localhost:8006/cardnames'})
             $http({ method: 'POST', url: serverLocation + 'deck', data: deck }).then(function (result) {
-                console.log(result);
+                $scope.showSavePopup = true;
+                $timeout(function () {
+                    $scope.showSavePopup = false;
+                }, 2000);
+            }, function () {
+                alert("Saven mislukt.");
             });
         }
         if ($scope.deck.id) {
             $http({ method: 'PUT', url: serverLocation + 'deck', data: deck }).then(function (result) {
-                console.log(result);
+                debugger;
+                $scope.showSavePopup = true;
+                $timeout(function () {
+                    $scope.showSavePopup = false;
+                }, 2000);
+            }, function () {
+                alert("Saven mislukt.");
             });
         }
     };
@@ -142,6 +165,7 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
     window.onbeforeunload = function (e) {
         if ($scope.deck && $scope.deck.name) {
             localStorage.setItem('latestActiveDeck', $scope.deck.name);
+            localStorage.setItem('hiddenPiles', JSON.stringify($scope.hiddenPiles));
         }
         return "Are you sure you want to navigate away from this page. Unsaved changes will be lost.";
     };

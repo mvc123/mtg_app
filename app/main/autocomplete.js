@@ -51,10 +51,14 @@
     // load all cards    
     function loadAll() {            
        $http({ method: 'GET', url:'http://localhost:8006/cardnames'}).then(function(response){  
-        var allCardsArray = response.data.map( function (cardNameObject) {
+        var cardNames = _.map(response.data, function(card){
+          return card.name;
+        });
+        var uniqueCardNames = _.uniq(cardNames)
+        var allCardsArray = uniqueCardNames.map( function (cardname) {
             return {
-                value: cardNameObject.name.toLowerCase(),
-                display: cardNameObject.name
+                value: cardname.toLowerCase(),
+                display: cardname
             };
         });                
         self.states = allCardsArray;                             

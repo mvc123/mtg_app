@@ -83,18 +83,18 @@ angular.module("services", [])
             countManaSymbols();
         }
     };
-})
-    .factory("confirmationpopup", function ($document) {
-    var confirmationpopup = {};
-    confirmationpopup.show = function ($event) {
+});
+/*.factory("confirmationpopup", function($document, $compile){
+    let confirmationpopup = {}
+    confirmationpopup.show = function ($event){
         debugger;
-        var positionobject = {
+        let positionobject = {
             x: $event.pageX,
             y: $event.pageY
         };
-        var popupelement = angular.element('<div style="font-size:120px; position: absolute; top:' + positionobject.y + 'px; left:' + positionobject.x + 'px;">Dit is de popup.</div>');
-        var body = $document.find('body').eq(0);
-        body.append(popupelement);
-    };
+        let popupelement = '<div style="font-size:100px; position: absolute; top:' + positionobject.y + 'px; left:' + positionobject.x + 'px;">sdjflskdfjlsdfkj<div popup type="confirmation"></div></div>';
+        let body = $document.find('body').eq(0);
+        body.append($compile(popupelement)(scope));
+    }
     return confirmationpopup;
-});
+})*/ 

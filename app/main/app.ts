@@ -24,14 +24,14 @@ interface AppScope extends angular.IScope {
   showAllPiles(): void;
   changePileView(pile: Pile, view: string): void;
   getPileClass(pile: Pile): string;
-  saveDeck(): void;
+  saveDeck(action: string): void;
   deckSelected(): void;
   amountOfDifferentCards(deck: Deck): number; 
 }
 
-angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions', 'services'])
+angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions', 'services', 'links', 'counters'])
   .controller('MainCtrl', function ($scope: AppScope, $rootScope, $http, serverLocation, amountOfDifferentCards, 
-                                    $timeout, confirmationpopup) {
+                                    $timeout) {
     
     // data used by / in smallSlider
     $scope.cardWidth = 168;
@@ -47,6 +47,15 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
     // called in autocomplete.js when cardVersions are loaded
     $scope.cbCardVersionsLoaded = function (cardVersions){
       $scope.cardVersions = cardVersions
+    }
+
+    $scope.createNewDeck = function (){
+      $scope.deck = {
+        name: "",
+        piles: [],
+        id: null
+      }
+      console.log("test");
     }
 
       // used to create piles (collections / verzamelingen) on the table (div with id table)
@@ -125,10 +134,10 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
 
     $scope.deletePile = function (targetpile: Pile, $event){
       debugger;
-      confirmationpopup.show($event);
+      // confirmationpopup.show($event);
       /*_.remove($scope.deck.piles, function(pile){
         return pile.name === targetpile.name;
-      })*/
+      })*/      
     }
 
     $scope.changePileView = function (pile: Pile, view: string){      
@@ -151,11 +160,13 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
 
     $scope.showSavePopup = false;
 
-    $scope.saveDeck = function (){      
+    $scope.saveDeck = function (action){      
       // let stringdeck = JSON.stringify($scope.deck);
+      if(action === "asNewDeck"){
+        $scope.deck.id = null;
+      }
       let deck = $scope.deck;      
-      if(!$scope.deck.id){        
-        console.log("test");
+      if(!$scope.deck.id){                
         // $http({ method: 'GET', url:'http://localhost:8006/cardnames'})
         $http({ method: 'POST', url: serverLocation + 'deck', data: deck}).then(function(result){           
           $scope.showSavePopup = true;

@@ -19,18 +19,24 @@
         <script src="constants.js"></script>
         <script src="functions.js"></script>
         <script src="services.js"></script>   
+        <script src="links.js"></script>
+        <script src="counters.js"></script> 
         <script src="https://use.fontawesome.com/54cb8d98a3.js"></script>    
     </head>
     <body>
       <div ng-app="mtg_commander_app" ng-controller="MainCtrl">   
         <!-- header: naam app / naam deck -->     
-        <div>
+        <div style="position:relative;">
           <span>MTG_app</span>
           <input type="text" ng-model="deck.name" placeholder="Name of your deck">
           <span>{{ deck.name }}</span>
           <!-- opgeslagen deck selecteren -->
           <select name="" id="" ng-options="deck.name for deck in alldecks" ng-model="selectedDeck.deck" ng-change="deckSelected()">            
           </select>
+          <button ng-click="createNewDeck()"> new deck </button>
+          <button ng-click="saveDeck('asNewDeck')">save deck as ...</button>
+          <input type="text" ng-model="deck.name" placeholder="Rename your deck">
+          <div my-links></div>   
         </div>
         <!-- kaarten zoeken en kaartversie kiezen uit slider -->
         <div style="width:237px; height:340px; float:left; border: solid 1px black;">
@@ -139,8 +145,8 @@
             </ul>            
           </div>                        
         </div>
-        </div>              
-      </div>         
+        <div cc-counter deck="deck"></div>
+        </div>                                
     </body>
 
 </html>

@@ -1,6 +1,24 @@
 /// <reference path="../../typings/all.d.ts" />
 
 angular.module("services", [])
+    /*.directive("popup", function(){
+        return {
+            templateUrl: "app/main/templates/confirmationpopup.html",
+            scope: {
+                popuptype: "=type"
+            },
+            link: function(scope){
+                scope.$confirm = confirm, 
+                scope.$cancel = cancel        
+            }
+        }        
+        function confirm(){
+            console.log("Confirmed");
+        }
+        function cancel(){
+            console.log("Canceled");
+        }       
+    })*/
     .factory("colors", function () {
         return {
             green: {
@@ -89,8 +107,8 @@ angular.module("services", [])
                 countManaSymbols();
             }
         }        
-    })
-    .factory("confirmationpopup", function($document){
+    })    
+    /*.factory("confirmationpopup", function($document, $compile){
         let confirmationpopup = {}
         confirmationpopup.show = function ($event){
             debugger;
@@ -98,9 +116,9 @@ angular.module("services", [])
                 x: $event.pageX,
                 y: $event.pageY
             };
-            let popupelement = angular.element('<div style="font-size:120px; position: absolute; top:' + positionobject.y + 'px; left:' + positionobject.x + 'px;">Dit is de popup.</div>');
+            let popupelement = '<div style="font-size:100px; position: absolute; top:' + positionobject.y + 'px; left:' + positionobject.x + 'px;">sdjflskdfjlsdfkj<div popup type="confirmation"></div></div>';
             let body = $document.find('body').eq(0);
-            body.append(popupelement);
+            body.append($compile(popupelement)(scope));            
         }
         return confirmationpopup;
-    })
+    })*/    

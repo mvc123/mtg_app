@@ -1,0 +1,20 @@
+<style>
+    .linksClosed{
+        height: 20px;
+        font-size: 20px;
+        transition: all 200ms;
+        overflow: hidden;
+    } 
+    .linksOpened{
+        height: 100px;
+        font-size: 20px;
+        transition: all 200ms;
+    }
+</style>
+
+<div ng-click="toggleLinks()" class="{{ getListClass() }}" style="position:absolute; top:0px; right: 10px; z-index: 9999">
+    <p style="margin: 0px; padding: 0px;">MIJN LINKS</p>
+    <a ng-repeat="link in links" ng-href="{{ link.url }}" style="display:block;" target="_blank">
+        <span>{{ link.name }}</span>
+    </a>
+</div>

@@ -1,0 +1,6 @@
+<div>
+    <div ng-repeat="cardName in cardsNames">
+        <input type="checkbox" ng-model="cardName.checked" ng-true-value="true" ng-false-value="false">
+        <span>{{ cardName.name }}</span>
+    </div>
+</div>

@@ -83,6 +83,32 @@ angular.module("services", [])
             countManaSymbols();
         }
     };
+})
+    .directive("checklist", function () {
+    return {
+        scope: {
+            deck: "="
+        },
+        templateUrl: "templates/checklist.html",
+        link: function (scope, element, attributes) {
+            scope.$watch("deck", function (deck) {
+                debugger;
+                if (deck.piles.length !== 0) {
+                    scope.cardsNames = createCardsNamesArray(deck);
+                }
+            }, true);
+            function createCardsNamesArray(deck) {
+                debugger;
+                var cardsNamesArray = [];
+                _.forEach(deck.piles, function (pile) {
+                    _.forEach(pile.cards, function (card) {
+                        cardsNamesArray.push({ name: card.name, checked: false });
+                    });
+                });
+                return cardsNamesArray;
+            }
+        }
+    };
 });
 /*.factory("confirmationpopup", function($document, $compile){
     let confirmationpopup = {}

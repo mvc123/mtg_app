@@ -107,6 +107,33 @@ angular.module("services", [])
                 countManaSymbols();
             }
         }        
+    })
+    .directive("checklist", function (){
+        return {
+            scope: {
+                deck: "=",                
+            },
+            templateUrl: "templates/checklist.html",
+            link: function(scope, element, attributes){
+                scope.$watch("deck", function(deck: Deck){
+                    debugger;
+                    if(deck.piles.length !== 0){
+                        scope.cardsNames = createCardsNamesArray(deck);
+                    }
+                }, true) 
+
+                function createCardsNamesArray (deck: Deck){
+                    debugger; 
+                    let cardsNamesArray = [];
+                    _.forEach(deck.piles, function(pile: Pile){
+                        _.forEach(pile.cards, function(card: Card){
+                            cardsNamesArray.push({ name: card.name, checked: false });
+                        })
+                    })
+                    return cardsNamesArray;
+                }
+            }
+        }
     })    
     /*.factory("confirmationpopup", function($document, $compile){
         let confirmationpopup = {}

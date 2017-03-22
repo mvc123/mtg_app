@@ -46,7 +46,7 @@
 .pileOfCards li{
     float: left; 
     display: block; 
-    padding: 5px 5px;     
+    padding: 2px 2px;     
 }
 
 .listOfCards{
@@ -60,4 +60,15 @@
 
 .manasymbol{
     height: 14px;
+}
+
+ul li.cardWrapper:hover .hidden{
+    display:block;
+}
+
+.hidden{
+    display: none;
+}
+.fa.hidden{
+    display: none;
 }

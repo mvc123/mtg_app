@@ -3,7 +3,7 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
     .controller('MainCtrl', function ($scope, $rootScope, $http, serverLocation, amountOfDifferentCards, $timeout) {
     // data used by / in smallSlider
     $scope.cardWidth = 168;
-    $scope.cardHeight = 247;
+    $scope.cardHeight = 240;
     $scope.selectCardVersion = function (card) {
         $scope.selectedCards.push(card);
         $scope.cardVersions = [];

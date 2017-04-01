@@ -1,5 +1,31 @@
 /// <reference path="../../typings/all.d.ts" />
 angular.module("services", [])
+    .factory("popup", function ($document, $compile) {
+    var popup = {};
+    popup.show = function (options) {
+        debugger;
+        var popupscope = options.scope.$new();
+        popupscope.title = options.title;
+        popupscope.close = close;
+        var content = options.content;
+        var directiveHTML = "";
+        if (content === "checkList") {
+            directiveHTML = '<div checklist deck="deck" ></div>';
+        }
+        var body = $document.find('body').eq(0);
+        var template = $compile('<div class="popup">{{ title }}<button ng-click="close()">SLUIT</button>' + directiveHTML + '</div>')(popupscope);
+        body.append(template);
+        function close() {
+            popupscope.$destroy();
+            template.remove();
+        }
+        /*    var deferred = $q.defer()
+        deferred.resolve("Het is gelukt!");
+        deferred.reject("Nee, mislukt!");*/
+        //return deferred.promise;
+    };
+    return popup;
+})
     .factory("colors", function () {
     return {
         green: {

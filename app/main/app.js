@@ -1,6 +1,6 @@
 /// <reference path="../../typings/all.d.ts" />
 angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions', 'services', 'links', 'counters'])
-    .controller('MainCtrl', function ($scope, $rootScope, $http, serverLocation, amountOfDifferentCards, $timeout) {
+    .controller('MainCtrl', function ($scope, $rootScope, $http, serverLocation, amountOfDifferentCards, $timeout, popup) {
     // data used by / in smallSlider
     $scope.cardWidth = 168;
     $scope.cardHeight = 240;
@@ -26,6 +26,14 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
         name: "",
         piles: [],
         id: null
+    };
+    $scope.showPopup = function (content) {
+        var options = {
+            scope: $scope,
+            title: "Dit is de titel",
+            content: content
+        };
+        popup.show(options);
     };
     $scope.nextPileLabel = "";
     $scope.createPile = function () {

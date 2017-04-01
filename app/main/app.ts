@@ -31,7 +31,7 @@ interface AppScope extends angular.IScope {
 
 angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions', 'services', 'links', 'counters'])
   .controller('MainCtrl', function ($scope: AppScope, $rootScope, $http, serverLocation, amountOfDifferentCards, 
-                                    $timeout) {
+                                    $timeout, popup) {
     
     // data used by / in smallSlider
     $scope.cardWidth = 168;
@@ -63,6 +63,15 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
       name: "",
       piles: [],
       id: null
+    }
+
+    $scope.showPopup = function(content){
+      let options = {
+        scope: $scope,
+        title: "Dit is de titel",
+        content: content
+      }
+      popup.show(options);
     }
 
     $scope.nextPileLabel = "";    

@@ -72,3 +72,10 @@ ul li.cardWrapper:hover .hidden{
 .fa.hidden{
     display: none;
 }
+
+.popup{
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 26px;
+}

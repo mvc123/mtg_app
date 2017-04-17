@@ -27,7 +27,7 @@
       <div ng-app="mtg_commander_app" ng-controller="MainCtrl">   
         <!-- header: naam app / naam deck -->     
         <div style="position:relative;">
-          <span>MTG_app</span>
+          <img class="appIcon" src="images/blackLotus.png" alt="">
           <input type="text" ng-model="deck.name" placeholder="Name of your deck">
           <span>{{ deck.name }}</span>
           <!-- opgeslagen deck selecteren -->
@@ -107,7 +107,7 @@
           </span>
         </div>
         <!-- table met piles -->
-        <div>
+        <div class="table">
           <div ng-repeat="pile in deck.piles" class="pile" style="float: left;" ng-if="showPile(pile)">
             <p>
               {{pile.name}} 
@@ -153,12 +153,14 @@
           </div>                        
         </div> <!-- end table -->
         <span style="cursor: pointer; color: pink;" ng-click="showPopup('checkList')">
-          <i class="fa fa-check-square-o" aria-hidden="true"></i>
+          <img class="imgButton" src="images/senseis.jpg" alt="">
         </span>
-
-        <div cc-counter deck="deck"></div>
-        <div ct-counter deck="deck"></div>
-                                      
+        <span style="cursor: pointer; color: yellow;" ng-click="showPopup('ccCounter')">
+          <img class="imgButton" src="images/prism.jpg" alt="">
+        </span>
+        <span style="cursor: pointer; color: lightgreen;" ng-click="showPopup('ctCounter')">
+          <img class="imgButton" src="images/demonictutor.jpg" alt="">
+        </span>    
       </div><!-- end ng-app -->
     </body>
 

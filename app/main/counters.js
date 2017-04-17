@@ -46,6 +46,9 @@ angular.module('counters', [])
                 };
                 _.forEach(deck.piles, function (pile) {
                     _.forEach(pile.cards, function (card) {
+                        if (!card.cmc) {
+                            return;
+                        }
                         var cmc = card.cmc;
                         var variable = "cc" + cmc.toString();
                         allCmc[variable] = allCmc[variable] + 1;

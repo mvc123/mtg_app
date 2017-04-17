@@ -14,7 +14,6 @@ var _ = require('lodash');
 function handleHTTP (req, res){     
     // example: req = 'http:://localhost.com/aaa' 
     //          req.url = 'aaa'    
-    console.log(req.method);        
     if(req.url === '/cardnames'){        
         var sqlite3 = require('sqlite3').verbose();         
         var file = "mtg_app_allSets.db"; // name of the database => .db        
@@ -68,7 +67,6 @@ function handleHTTP (req, res){
         }).on('end', function () {
             body = Buffer.concat(body).toString(); // geen toString geeft Buffer 7b 52 6e 6d
             var parsedbody= JSON.parse(body);  
-            console.log("in deck put")                      
             var stmt = db.prepare('UPDATE Decks SET "name" = ?, "piles" = ? WHERE id = ?');
             stmt.run(parsedbody.name, JSON.stringify(parsedbody.piles), parsedbody.id);   
             stmt.finalize();                              

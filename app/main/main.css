@@ -79,3 +79,20 @@ ul li.cardWrapper:hover .hidden{
     left: 20px;
     font-size: 26px;
 }
+
+.appIcon{
+    border-radius: 50%;
+    height: 75px;
+    width: 75px;
+}
+
+.imgButton{
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+}
+
+.table{
+    background-image: url('wallpaper/wallpaper.jpg');
+    background-color: green;
+}

@@ -7,8 +7,7 @@ interface Popup {
 angular.module("services", [])
   .factory("popup", function ($document, $compile) {
     let popup = {}
-    popup.show = function (options) {
-      debugger;
+    popup.show = function (options) {      
       let popupscope = options.scope.$new();
       popupscope.title = options.title;
       popupscope.close = close;
@@ -16,6 +15,12 @@ angular.module("services", [])
       let directiveHTML = "";
       if(content === "checkList"){
         directiveHTML = '<div checklist deck="deck" ></div>'
+      }
+      if(content === "ccCounter"){
+        directiveHTML = '<div cc-counter deck="deck" ></div>'
+      }
+      if(content === "ctCounter"){
+        directiveHTML = '<div ct-counter deck="deck" ></div>'
       }
       var body = $document.find('body').eq(0);
       var template = $compile('<div class="popup">{{ title }}<button ng-click="close()">SLUIT</button>'+ directiveHTML +'</div>')(popupscope);

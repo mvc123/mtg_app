@@ -1,6 +1,6 @@
 /// <reference path="../../typings/all.d.ts" />
 angular.module("services", [])
-    .factory("popup", function ($document, $compile) {
+    .factory("popup", function ($document, $compile, $q) {
     var popup = {};
     popup.show = function (options) {
         var popupscope = options.scope.$new();
@@ -24,12 +24,45 @@ angular.module("services", [])
             popupscope.$destroy();
             template.remove();
         }
-        /*    var deferred = $q.defer()
-        deferred.resolve("Het is gelukt!");
-        deferred.reject("Nee, mislukt!");*/
-        //return deferred.promise;
+        var deferred = $q.defer();
+        var promise = deferred.promise;
+        return deferred;
     };
     return popup;
+})
+    .factory("confirmationpopup", function ($document, $compile, $q) {
+    var confirmationpopup = {};
+    confirmationpopup.show = function (options) {
+        debugger;
+        var popupscope = options.scope.$new();
+        popupscope.title = options.title;
+        popupscope.body = options.body;
+        popupscope.confirm = confirm;
+        popupscope.cancel = cancel;
+        var body = $document.find('body').eq(0);
+        var template = $compile('<div class="popup" style="top:' + options.top + '; left:' + options.left + '"><p>{{ title }}</p><p>{{ body }}</p><button ng-click="confirm()">OK</button><button ng-click="cancel()">NOT OK</button></div>')(popupscope);
+        body.append(template);
+        function confirm() {
+            debugger;
+            popupscope.$destroy();
+            template.remove();
+            deferred.resolve();
+        }
+        function cancel() {
+            debugger;
+            popupscope.$destroy();
+            template.remove();
+            deferred.reject();
+        }
+        // $q.defer() is a thenable promise manager = object with functions for creating and manipulating promises.
+        // $q.defer().promise creates a promise object
+        // $q.defer().resolve(value) fullfills the created promise with a value
+        // $q.defer().reject(error) rejects the created promise with an error
+        var deferred = $q.defer();
+        var promise = deferred.promise;
+        return promise;
+    };
+    return confirmationpopup;
 })
     .factory("colors", function () {
     return {

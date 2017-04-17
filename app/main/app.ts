@@ -31,7 +31,7 @@ interface AppScope extends angular.IScope {
 
 angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions', 'services', 'links', 'counters'])
   .controller('MainCtrl', function ($scope: AppScope, $rootScope, $http, serverLocation, amountOfDifferentCards, 
-                                    $timeout, popup) {
+                                    $timeout, popup, confirmationpopup) {
     
     // data used by / in smallSlider
     $scope.cardWidth = 168;
@@ -55,7 +55,6 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
         piles: [],
         id: null
       }
-      console.log("test");
     }
 
       // used to create piles (collections / verzamelingen) on the table (div with id table)
@@ -143,10 +142,24 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
 
     $scope.deletePile = function (targetpile: Pile, $event){
       debugger;
-      // confirmationpopup.show($event);
-      /*_.remove($scope.deck.piles, function(pile){
-        return pile.name === targetpile.name;
-      })*/      
+      let popupoptions = {
+        event: $event,
+        scope: $scope,
+        title: "Delete pile?",
+        body: "This action cannot be reset !",
+        left: $event.x,
+        top: $event.y
+      }
+      let promise = confirmationpopup.show(popupoptions);
+      debugger;
+      promise.then(function(result){
+        debugger;
+        _.remove($scope.deck.piles, function(pile){
+          return pile.name === targetpile.name;
+        })
+      }, function(error){
+        debugger;
+      })
     }
 
     $scope.changePileView = function (pile: Pile, view: string){      

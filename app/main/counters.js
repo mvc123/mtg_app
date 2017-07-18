@@ -58,4 +58,30 @@ angular.module('counters', [])
             }
         }
     };
+})
+    .directive('createProxy', function () {
+    debugger;
+    return {
+        scope: {},
+        templateUrl: 'templates/createProxy.html',
+        link: function (scope, element, attributes) {
+            debugger;
+            var proxy = {
+                cmc: null,
+                colorIdentity: null,
+                colors: null,
+                imageName: null,
+                manacost: null,
+                multiverseId: null,
+                name: null,
+                power: null,
+                subtypes: null,
+                text: null,
+                toughness: null,
+                type: "proxy",
+                types: null
+            };
+            scope.proxy = proxy;
+        }
+    };
 });

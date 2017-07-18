@@ -48,7 +48,8 @@
                 itemheight="{{ cardHeight }}" 
                 itemwidth="{{ cardWidth }}"                          
                 clickslideritem="selectCardVersion"
-                style="position: relative; margin-left: 33px;"></div>          
+                style="position: relative; margin-left: 33px;"></div>
+            <button ng-click="createProxy()">Make proxy</button>
         </div>
         <!-- opslagplaats voor kaartversies -->
         <div style="float:left; width:{{ (cardWidth + 10) * 4}}px; height:340px; border: solid 1px green; overflow-y: scroll; overflow-x: hidden;">                    
@@ -60,7 +61,8 @@
                 dnd-draggable="card"                                  
                 dnd-effect-allowed="move">
                 <i class="fa fa-trash" aria-hidden="true" ng-click="deleteSelectedCard(card)"></i>
-                <img ng-src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{card.multiverseId}}&type=card" alt="" style="width: {{ cardWidth }}px; height: {{ cardHeight }}px">
+                <img ng-if="card.type !== 'proxy'" ng-src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{card.multiverseId}}&type=card" alt="" style="width: {{ cardWidth }}px; height: {{ cardHeight }}px">
+                <div ng-if="card.type === 'proxy'">{{card.type}}</div>
               <!-- TODO add img  ng-src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{card.multiverseId}}&type=card" -->
                 <!-- {{ card.name }} -->
             </li>            

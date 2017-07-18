@@ -49,23 +49,46 @@
     }
 
     // load all cards    
-    function loadAll() {            
-       $http({ method: 'GET', url:'http://localhost:8006/cardnames'}).then(function(response){  
-        var cardNames = _.map(response.data, function(card){
+    function loadAll() {
+      debugger;
+      var version = 4;
+      var request = window.indexedDB.open("mtg_app", version);
+      request.onerror = function (event) {
+
+      }
+      request.onsuccess = function (event) {
+        debugger;
+        var db = event.target.result;
+        db.onerror = function (event){
+          alert("Database error: " + event.target.errorCode);
+        }
+      }
+      request.onupgradeneeded = function (event) {
+        debugger;
+        var db = event.target.result;
+        var objectStore = db.createObjectStore("allcards", { autoIncrement : true});
+        var cards = ["Fork", "Giant Growth"];
+        for(var i in cards){
+          objectStore.add(cards[i]);
+        }   
+      }
+
+      $http({ method: 'GET', url: 'http://localhost:8006/cardnames' }).then(function (response) {
+        var cardNames = _.map(response.data, function (card) {
           return card.name;
         });
         var uniqueCardNames = _.uniq(cardNames)
-        var allCardsArray = uniqueCardNames.map( function (cardname) {
-            return {
-                value: cardname.toLowerCase(),
-                display: cardname
-            };
-        });                
-        self.states = allCardsArray;                             
-      })            
+        var allCardsArray = uniqueCardNames.map(function (cardname) {
+          return {
+            value: cardname.toLowerCase(),
+            display: cardname
+          };
+        });
+        self.states = allCardsArray;
+      })
     }
 
-    
+
         
     function createFilterFor(query) {
       var lowercaseQuery = angular.lowercase(query);

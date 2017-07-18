@@ -9,6 +9,7 @@ angular.module("services", [])
     let popup: Popup = {}
     popup.show = function (options) {            
       let popupscope = options.scope.$new();
+      popupscope.options = options;
       popupscope.title = options.title;
       popupscope.close = close;
       let content = options.content;
@@ -21,6 +22,10 @@ angular.module("services", [])
       }
       if(content === "ctCounter"){
         directiveHTML = '<div ct-counter deck="deck" ></div>'
+      }
+      if(content === "proxy"){
+        debugger;
+        directiveHTML = '<div create-proxy></div>'
       }
       var body = $document.find('body').eq(0);
       var template = $compile('<div class="popup">{{ title }}<button ng-click="close()">SLUIT</button>'+ directiveHTML +'</div>')(popupscope);

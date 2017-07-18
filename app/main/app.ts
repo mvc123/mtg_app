@@ -37,11 +37,24 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
     $scope.cardWidth = 168;
     $scope.cardHeight = 240;    
           
-    $scope.selectCardVersion = function (card) {                 
+    $scope.selectCardVersion = function (card) {    
       $scope.selectedCards.push(card);
       $scope.cardVersions = [];      
     }
-      
+    
+    $scope.createProxy = function(){
+        debugger;        
+        let options = {
+            content: "proxy",            
+            scope: $scope
+        }
+        debugger;
+        popup.show(options).then(function(proxy){
+            debugger;
+            $scope.selectedCards.push(proxy);
+        });        
+    }
+    
     $scope.selectedCards = [];
 
     // called in autocomplete.js when cardVersions are loaded

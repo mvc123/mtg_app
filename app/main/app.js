@@ -1,6 +1,6 @@
 /// <reference path="../../typings/all.d.ts" />
 angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions', 'services', 'links', 'counters'])
-    .controller('MainCtrl', function ($scope, $rootScope, $http, serverLocation, amountOfDifferentCards, $timeout, popup, confirmationpopup) {
+    .controller('MainCtrl', function ($scope, $rootScope, $http, serverLocation, amountOfDifferentCards, $timeout, popup, confirmationpopup, proxypopup) {
     // data used by / in smallSlider
     $scope.cardWidth = 168;
     $scope.cardHeight = 240;
@@ -11,13 +11,13 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
     $scope.createProxy = function () {
         debugger;
         var options = {
-            content: "proxy",
             scope: $scope
         };
         debugger;
-        popup.show(options).then(function (proxy) {
-            debugger;
+        proxypopup.show(options).then(function (proxy) {
             $scope.selectedCards.push(proxy);
+        }, function (cancel) {
+            return;
         });
     };
     $scope.selectedCards = [];

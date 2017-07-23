@@ -31,7 +31,7 @@ interface AppScope extends angular.IScope {
 
 angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 'smallslider', 'constants', 'functions', 'services', 'links', 'counters'])
   .controller('MainCtrl', function ($scope: AppScope, $rootScope, $http, serverLocation, amountOfDifferentCards, 
-                                    $timeout, popup, confirmationpopup) {
+                                    $timeout, popup, confirmationpopup, proxypopup) {
     
     // data used by / in smallSlider
     $scope.cardWidth = 168;
@@ -44,14 +44,14 @@ angular.module('mtg_commander_app', ['ui.router', 'autocomplete', 'dndLists', 's
     
     $scope.createProxy = function(){
         debugger;        
-        let options = {
-            content: "proxy",            
+        let options = {                       
             scope: $scope
         }
         debugger;
-        popup.show(options).then(function(proxy){
-            debugger;
+        proxypopup.show(options).then(function(proxy){
             $scope.selectedCards.push(proxy);
+        }, function(cancel){
+            return;
         });        
     }
     

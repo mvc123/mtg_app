@@ -22,21 +22,18 @@ angular.module("services", [])
       }
       if(content === "ctCounter"){
         directiveHTML = '<div ct-counter deck="deck" ></div>'
-      }
-      if(content === "proxy"){
-        debugger;
-        directiveHTML = '<div create-proxy></div>'
-      }
+      }      
       var body = $document.find('body').eq(0);
       var template = $compile('<div class="popup">{{ title }}<button ng-click="close()">SLUIT</button>'+ directiveHTML +'</div>')(popupscope);
       body.append(template);
       function close (){
+      debugger;        
         popupscope.$destroy();
         template.remove();        
       }
-      var deferred = $q.defer()
-      var promise = deferred.promise;
-      return deferred;
+      var deferred = $q.defer() // returns a "deferred object"
+      var promise = deferred.promise; // the "deferred object" has a .promise property which returns your newly created property      
+      return promise; // this promise is returned and will be resolved in the close function with a certain value.
     }
     return popup;
   })
@@ -65,7 +62,7 @@ angular.module("services", [])
         deferred.reject();
       }
       // $q.defer() is a thenable promise manager = object with functions for creating and manipulating promises.
-      // $q.defer().promise creates a promise object
+      // $q.defer().promise creates a promise object, which will be returned to be resolved or rejected later.
       // $q.defer().resolve(value) fullfills the created promise with a value
       // $q.defer().reject(error) rejects the created promise with an error
       var deferred = $q.defer() 
@@ -73,6 +70,38 @@ angular.module("services", [])
       return promise;
     }
     return confirmationpopup;
+  })
+  .factory("proxypopup", function($document, $compile, $q){
+    let proxypopup= {};
+    proxypopup.show = function(options){
+        let proxypopupscope = options.scope.$new();
+        proxypopupscope.confirm = confirm;
+        proxypopupscope.cancel = cancel;
+        proxypopupscope.proxy= {
+            name: "",
+            text: ""
+        }        
+        var body = $document.find('body').eq(0);
+        var template = $compile('<div class="popup"><p>{{ title }}</p><input type="text" ng-model="proxy.name"></input><input type="textarea" ng-model="proxy.text"></input><button ng-click="confirm()">OK</button><button ng-click="cancel()">NOT OK</button></div>')(proxypopupscope);
+        body.append(template);
+        
+        function confirm (){
+            debugger;
+            deferred.resolve(proxypopupscope.proxy);
+            proxypopupscope.$destroy();
+            template.remove();    
+        }
+        function cancel (){
+            debugger;
+            deferred.reject("canceled");
+            proxypopupscope.$destroy();
+            template.remove();   
+        }        
+        let deferred = $q.defer();
+        let promise = deferred.promise;
+        return promise;
+    }
+    return proxypopup;
   })
   .factory("colors", function () {
     return {
@@ -107,7 +136,7 @@ angular.module("services", [])
         pathToImg: "manasymbols/whiteMana.png"
       }
     }
-  })
+  })  
   .directive("colorCounter", function (colors) {
     // TO DO: works on init not on add card to list, scope.$watch not working
     return {
@@ -171,14 +200,12 @@ angular.module("services", [])
       templateUrl: "templates/checklist.html",
       link: function (scope, element, attributes) {
         scope.$watch("deck", function (deck: Deck) {
-          debugger;
           if (deck.piles.length !== 0) {
             scope.cardsNames = createCardsNamesArray(deck);
           }
         }, true)
 
-        function createCardsNamesArray(deck: Deck) {
-          debugger;
+        function createCardsNamesArray(deck: Deck) {          
           let cardsNamesArray = [];
           _.forEach(deck.piles, function (pile: Pile) {
             _.forEach(pile.cards, function (card: Card) {
